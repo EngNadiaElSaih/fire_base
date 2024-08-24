@@ -47,31 +47,28 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyA0Fx4sVKaGYnlqjYpAs69u7pAs8drBxdE',
-    appId: '1:393883643191:web:53af5300727d4f459abeb2',
-    messagingSenderId: '393883643191',
-    projectId: 'nadia-elsaih',
-    authDomain: 'nadia-elsaih.firebaseapp.com',
-    databaseURL: 'https://nadia-elsaih-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'nadia-elsaih.appspot.com',
+    apiKey: 'AIzaSyCLn_SwL1lTt-Qi9r_8ZRMWXQgjCCn249g',
+    appId: '1:956029703593:web:1110a0db02f37fa16560b8',
+    messagingSenderId: '956029703593',
+    projectId: 'edu-nadia',
+    authDomain: 'edu-nadia.firebaseapp.com',
+    storageBucket: 'edu-nadia.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDtcu8JZ94UwhSryDwQR52uo7YHYovTV-8',
-    appId: '1:393883643191:android:4e4ad8b330d862689abeb2',
-    messagingSenderId: '393883643191',
-    projectId: 'nadia-elsaih',
-    databaseURL: 'https://nadia-elsaih-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'nadia-elsaih.appspot.com',
+    apiKey: 'AIzaSyCTrtroNqHEaNqwshm0ytBwJc31EYOypo8',
+    appId: '1:956029703593:android:696f6a45563a62a16560b8',
+    messagingSenderId: '956029703593',
+    projectId: 'edu-nadia',
+    storageBucket: 'edu-nadia.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDfB3Lu1ZdHMtpex3Gi9PPOcOMI-853Mko',
-    appId: '1:393883643191:ios:6539b7bc9fbe36969abeb2',
-    messagingSenderId: '393883643191',
-    projectId: 'nadia-elsaih',
-    databaseURL: 'https://nadia-elsaih-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'nadia-elsaih.appspot.com',
+    apiKey: 'AIzaSyCC1lXJdl4ls4ZIa-oHLATfhuXBh56Ourc',
+    appId: '1:956029703593:ios:c898e7803afe1d636560b8',
+    messagingSenderId: '956029703593',
+    projectId: 'edu-nadia',
+    storageBucket: 'edu-nadia.appspot.com',
     iosBundleId: 'com.example.flutterApplication1',
   );
 }

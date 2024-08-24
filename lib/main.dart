@@ -1,8 +1,9 @@
 import 'dart:ui';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/cubit/auth_cubit.dart';
-// import 'package:flutter_application_1/firebase_options.dart';
+import 'package:flutter_application_1/firebase_options.dart';
 import 'package:flutter_application_1/pages/home_page.dart';
 import 'package:flutter_application_1/pages/login_page.dart';
 import 'package:flutter_application_1/pages/onboarding_page.dart';
