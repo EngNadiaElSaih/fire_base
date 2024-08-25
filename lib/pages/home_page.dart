@@ -66,6 +66,9 @@ class _HomePageState extends State<HomePage> {
               const CoursesWidget(
                 rankValue: 'top rated',
               ),
+              const CoursesWidget(
+                rankValue: 'top rated',
+              ),
               ElevatedButton(
                   onPressed: () async {
                     await FirebaseFirestore.instance
