@@ -47,31 +47,28 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyA0Fx4sVKaGYnlqjYpAs69u7pAs8drBxdE',
-    appId: '1:393883643191:web:53af5300727d4f459abeb2',
-    messagingSenderId: '393883643191',
-    projectId: 'nadia-elsaih',
-    authDomain: 'nadia-elsaih.firebaseapp.com',
-    databaseURL: 'https://nadia-elsaih-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'nadia-elsaih.appspot.com',
+    apiKey: 'AIzaSyDjkGpvyjhcMOly2S8l3FknukkLER_9rwI',
+    appId: '1:801769266716:web:9a654fb7aa40f9d9fec9d9',
+    messagingSenderId: '801769266716',
+    projectId: 'edu-vista-nadia',
+    authDomain: 'edu-vista-nadia.firebaseapp.com',
+    storageBucket: 'edu-vista-nadia.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDtcu8JZ94UwhSryDwQR52uo7YHYovTV-8',
-    appId: '1:393883643191:android:4e4ad8b330d862689abeb2',
-    messagingSenderId: '393883643191',
-    projectId: 'nadia-elsaih',
-    databaseURL: 'https://nadia-elsaih-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'nadia-elsaih.appspot.com',
+    apiKey: 'AIzaSyDCmJCuXg_a9oOKflc6BCVhfDZkbglLq60',
+    appId: '1:801769266716:android:729282dee7e6b612fec9d9',
+    messagingSenderId: '801769266716',
+    projectId: 'edu-vista-nadia',
+    storageBucket: 'edu-vista-nadia.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDfB3Lu1ZdHMtpex3Gi9PPOcOMI-853Mko',
-    appId: '1:393883643191:ios:6539b7bc9fbe36969abeb2',
-    messagingSenderId: '393883643191',
-    projectId: 'nadia-elsaih',
-    databaseURL: 'https://nadia-elsaih-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'nadia-elsaih.appspot.com',
+    apiKey: 'AIzaSyBkZJgda1hX9RgzXGNGceMWxoBqhu3TR8U',
+    appId: '1:801769266716:ios:8758e01e5cb06d2cfec9d9',
+    messagingSenderId: '801769266716',
+    projectId: 'edu-vista-nadia',
+    storageBucket: 'edu-vista-nadia.appspot.com',
     iosBundleId: 'com.example.flutterApplication1',
   );
 }

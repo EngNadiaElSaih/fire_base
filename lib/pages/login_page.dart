@@ -41,25 +41,29 @@ class _LoginPageState extends State<LoginPage> {
             emailController: emailController,
             passwordController: passwordController);
       },
-      body: Column(
-        children: [
-          CustomTextFormField(
-            controller: emailController,
-            hintText: 'Demo@gmail.com',
-            labelText: 'Email',
-            keyboardType: TextInputType.emailAddress,
+      body: SingleChildScrollView(
+        child: Expanded(
+          child: Column(
+            children: [
+              CustomTextFormField(
+                controller: emailController,
+                hintText: 'Demo@gmail.com',
+                labelText: 'Email',
+                keyboardType: TextInputType.emailAddress,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              CustomTextFormField(
+                controller: passwordController,
+                hintText: '***********',
+                labelText: 'Password',
+                obscureText: true,
+                keyboardType: TextInputType.visiblePassword,
+              ),
+            ],
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          CustomTextFormField(
-            controller: passwordController,
-            hintText: '***********',
-            labelText: 'Password',
-            obscureText: true,
-            keyboardType: TextInputType.visiblePassword,
-          ),
-        ],
+        ),
       ),
     );
   }

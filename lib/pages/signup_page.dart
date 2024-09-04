@@ -47,44 +47,46 @@ class _SignUpPageState extends State<SignUpPage> {
             nameController: nameController,
             passwordController: passwordController);
       },
-      body: Column(
-        children: [
-          CustomTextFormField(
-            controller: nameController,
-            hintText: 'Mariam Attef ',
-            labelText: 'Full Name',
-            keyboardType: TextInputType.emailAddress,
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          CustomTextFormField(
-            controller: emailController,
-            hintText: 'Demo@gmail.com',
-            labelText: 'Email',
-            keyboardType: TextInputType.emailAddress,
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          CustomTextFormField(
-            controller: passwordController,
-            hintText: '***********',
-            labelText: 'Password',
-            obscureText: true,
-            keyboardType: TextInputType.visiblePassword,
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          CustomTextFormField(
-            controller: confirmPasswordController,
-            hintText: '***********',
-            labelText: 'Confirm Password',
-            obscureText: true,
-            keyboardType: TextInputType.visiblePassword,
-          ),
-        ],
+      body: Expanded(
+        child: Column(
+          children: [
+            CustomTextFormField(
+              controller: nameController,
+              hintText: 'Nadia El_saih ',
+              labelText: 'Full Name',
+              keyboardType: TextInputType.emailAddress,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            CustomTextFormField(
+              controller: emailController,
+              hintText: 'Demo@gmail.com',
+              labelText: 'Email',
+              keyboardType: TextInputType.emailAddress,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            CustomTextFormField(
+              controller: passwordController,
+              hintText: '***********',
+              labelText: 'Password',
+              obscureText: true,
+              keyboardType: TextInputType.visiblePassword,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            CustomTextFormField(
+              controller: confirmPasswordController,
+              hintText: '***********',
+              labelText: 'Confirm Password',
+              obscureText: true,
+              keyboardType: TextInputType.visiblePassword,
+            ),
+          ],
+        ),
       ),
     );
   }

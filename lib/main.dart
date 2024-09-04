@@ -1,8 +1,13 @@
 import 'dart:ui';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/blocs/course/course_bloc.dart';
+import 'package:flutter_application_1/blocs/lecture/lecture_bloc.dart';
 import 'package:flutter_application_1/cubit/auth_cubit.dart';
-// import 'package:flutter_application_1/firebase_options.dart';
+import 'package:flutter_application_1/firebase_options.dart';
+
+import 'package:flutter_application_1/pages/course_details_page.dart';
 import 'package:flutter_application_1/pages/home_page.dart';
 import 'package:flutter_application_1/pages/login_page.dart';
 import 'package:flutter_application_1/pages/onboarding_page.dart';
@@ -12,19 +17,36 @@ import 'package:flutter_application_1/pages/splash_page.dart';
 import 'package:flutter_application_1/services/pref.service.dart';
 import 'package:flutter_application_1/utils/color_utilis.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // تحميل ملف .env أولاً
+  try {
+    await dotenv.load(fileName: ".env");
+    print("Dotenv file loaded successfully");
+  } catch (e) {
+    print("Failed to load .env file: $e");
+  }
+
   await PreferencesService.init();
+
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    print('Firebase initialized successfully');
   } catch (e) {
     print('Failed to initialize Firebase: $e');
   }
+
   runApp(MultiBlocProvider(
-    providers: [BlocProvider(create: (ctx) => AuthCubit())],
+    providers: [
+      BlocProvider(create: (ctx) => AuthCubit()),
+      BlocProvider(create: (ctx) => CourseBloc()),
+      BlocProvider(create: (ctx) => LectureBloc()),
+    ],
     child: const MyApp(),
   ));
 }
@@ -47,7 +69,7 @@ class MyApp extends StatelessWidget {
       ),
       onGenerateRoute: (settings) {
         final String routeName = settings.name ?? '';
-        final Map? data = settings.arguments as Map?;
+        final dynamic data = settings.arguments;
         switch (routeName) {
           case LoginPage.id:
             return MaterialPageRoute(builder: (context) => LoginPage());
@@ -59,6 +81,11 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (context) => OnBoardingPage());
           case HomePage.id:
             return MaterialPageRoute(builder: (context) => HomePage());
+          case CourseDetailsPage.id:
+            return MaterialPageRoute(
+                builder: (context) => CourseDetailsPage(
+                      course: data,
+                    ));
 
           default:
             return MaterialPageRoute(builder: (context) => SplashPage());
