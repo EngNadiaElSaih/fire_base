@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/server.dart';
+import 'package:flutter_application_1/widgets/navigator_bar.dart';
 
 class EditPost extends StatefulWidget {
   String postId;
@@ -156,6 +157,7 @@ class _EditPostState extends State<EditPost> {
           ),
         ),
       ),
+      bottomNavigationBar: NavigatorBar(),
     );
   }
 }

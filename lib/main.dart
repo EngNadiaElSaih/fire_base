@@ -73,8 +73,9 @@ class MyApp extends StatelessWidget {
         switch (routeName) {
           case LoginPage.id:
             return MaterialPageRoute(builder: (context) => LoginPage());
-          case SignUpPage.id:
+          case SignUpPage.id: // هنا تتوقع أن يكون id مكتوب بالشكل الصحيح
             return MaterialPageRoute(builder: (context) => SignUpPage());
+
           case ResetPasswordPage.id:
             return MaterialPageRoute(builder: (context) => ResetPasswordPage());
           case OnBoardingPage.id:

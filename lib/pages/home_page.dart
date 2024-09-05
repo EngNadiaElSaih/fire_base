@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -33,6 +34,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Expanded(
           child: SafeArea(

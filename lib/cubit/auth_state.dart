@@ -26,3 +26,27 @@ final class LoginFailed extends LoginState {
 
   LoginFailed(this.error);
 }
+
+// Logout State
+final class LogoutState extends AuthState {}
+
+final class LogoutLoading extends LogoutState {}
+
+final class LogoutSuccess extends LogoutState {}
+
+final class LogoutFailed extends LogoutState {
+  final String error;
+
+  LogoutFailed(this.error);
+}
+
+// General Auth States
+final class Authenticated extends AuthState {} // المستخدم مصدق عليه
+
+final class Unauthenticated extends AuthState {} // المستخدم لم يعد مصدق عليه
+
+final class AuthError extends AuthState {
+  final String message;
+
+  AuthError(this.message); // عند حدوث خطأ عام
+}

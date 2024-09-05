@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/server.dart';
+import 'package:flutter_application_1/widgets/navigator_bar.dart';
 
 class CreatePost extends StatefulWidget {
   const CreatePost({Key? key}) : super(key: key);
@@ -145,6 +146,7 @@ class _CreatePostState extends State<CreatePost> {
           ),
         ),
       ),
+      bottomNavigationBar: NavigatorBar(),
     );
   }
 }

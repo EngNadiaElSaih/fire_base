@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/home_page.dart';
@@ -7,7 +6,11 @@ import 'package:flutter_application_1/pages/home_page.dart';
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit() : super(AuthInitial());
+  final FirebaseAuth _firebaseAuth;
+
+  AuthCubit()
+      : _firebaseAuth = FirebaseAuth.instance,
+        super(AuthInitial());
 
   Future<void> login({
     required BuildContext context,
@@ -15,7 +18,7 @@ class AuthCubit extends Cubit<AuthState> {
     required TextEditingController passwordController,
   }) async {
     try {
-      var credentials = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      var credentials = await _firebaseAuth.signInWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
@@ -33,6 +36,7 @@ class AuthCubit extends Cubit<AuthState> {
       }
     } on FirebaseAuthException catch (e) {
       if (!context.mounted) return;
+
       if (e.code == 'user-not-found') {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -76,11 +80,11 @@ class AuthCubit extends Cubit<AuthState> {
     required TextEditingController passwordController,
   }) async {
     try {
-      var credentials =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      var credentials = await _firebaseAuth.createUserWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
+
       if (credentials.user != null) {
         credentials.user!.updateDisplayName(nameController.text);
 
@@ -91,10 +95,12 @@ class AuthCubit extends Cubit<AuthState> {
             content: Text('Account created successfully'),
           ),
         );
+
         Navigator.pushReplacementNamed(context, HomePage.id);
       }
     } on FirebaseAuthException catch (e) {
       if (!context.mounted) return;
+
       if (e.code == 'weak-password') {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -110,11 +116,24 @@ class AuthCubit extends Cubit<AuthState> {
       }
     } catch (e) {
       if (!context.mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Sign up Exception $e'),
         ),
       );
+    }
+  }
+
+  Future<void> logout() async {
+    try {
+      emit(LogoutLoading()); // إظهار حالة تحميل أثناء تسجيل الخروج
+      await _firebaseAuth.signOut();
+      emit(
+          Unauthenticated()); // تحديث الحالة إلى غير مصدق عليه بعد تسجيل الخروج
+      emit(LogoutSuccess()); // تسجيل الخروج بنجاح
+    } catch (e) {
+      emit(LogoutFailed(e.toString())); // في حالة وجود خطأ أثناء تسجيل الخروج
     }
   }
 }

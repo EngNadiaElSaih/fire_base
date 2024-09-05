@@ -50,92 +50,95 @@ class _CourseDetailsPageState extends State<CourseDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         body: Stack(
-      children: [
-        // video bloc
-        BlocBuilder<LectureBloc, LectureState>(builder: (ctx, state) {
-          var stateEx = state is LectureChosenState ? state : null;
+          children: [
+            // video bloc
+            BlocBuilder<LectureBloc, LectureState>(builder: (ctx, state) {
+              var stateEx = state is LectureChosenState ? state : null;
 
-          if (stateEx == null) {
-            return const SizedBox.shrink();
-          }
+              if (stateEx == null) {
+                return const SizedBox.shrink();
+              }
 
-          return Container(
-            height: 250,
-            child: stateEx.lecture.lecture_url == null ||
-                    stateEx.lecture.lecture_url == ''
-                ? const Center(
-                    child: Text(
-                    'Invalid Url',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  ))
-                : VideoBoxWidget(
-                    url: stateEx.lecture.lecture_url ?? '',
+              return Container(
+                height: 250,
+                child: stateEx.lecture.lecture_url == null ||
+                        stateEx.lecture.lecture_url == ''
+                    ? const Center(
+                        child: Text(
+                        'Invalid Url',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ))
+                    : VideoBoxWidget(
+                        url: stateEx.lecture.lecture_url ?? '',
+                      ),
+              );
+            }),
+            Align(
+                alignment: Alignment.bottomCenter,
+                child: AnimatedContainer(
+                  decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(25),
+                          topRight: Radius.circular(25))),
+                  duration: const Duration(seconds: 3),
+                  alignment: Alignment.bottomCenter,
+                  // height: MediaQuery.sizeOf(context).height - 220,
+                  height: applyChanges
+                      ? MediaQuery.sizeOf(context).height - 220
+                      : null,
+                  curve: Curves.easeInOut,
+                  child: SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          Text(
+                            widget.course.title ?? 'No Name',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w700, fontSize: 20),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            widget.course.instructor?.name ??
+                                'No Instructor Name',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w400, fontSize: 17),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          _BodyWidget()
+                        ],
+                      ),
+                    ),
                   ),
-          );
-        }),
-        Align(
-            alignment: Alignment.bottomCenter,
-            child: AnimatedContainer(
-              decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(25),
-                      topRight: Radius.circular(25))),
-              duration: const Duration(seconds: 3),
-              alignment: Alignment.bottomCenter,
-              // height: MediaQuery.sizeOf(context).height - 220,
-              height:
-                  applyChanges ? MediaQuery.sizeOf(context).height - 220 : null,
-              curve: Curves.easeInOut,
-              child: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      Text(
-                        widget.course.title ?? 'No Name',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 20),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        widget.course.instructor?.name ?? 'No Instructor Name',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w400, fontSize: 17),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      _BodyWidget()
-                    ],
-                  ),
+                )),
+            Positioned(
+              top: 20,
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(
+                  Icons.arrow_back_ios_new,
+                  color: ColorUtility.main,
                 ),
               ),
-            )),
-        Positioned(
-          top: 20,
-          child: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(
-              Icons.arrow_back_ios_new,
-              color: ColorUtility.main,
             ),
-          ),
-        ),
-      ],
-    ));
+          ],
+        ));
   }
 }
 

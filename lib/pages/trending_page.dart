@@ -12,6 +12,7 @@ class _TrendingPageState extends State<TrendingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -27,6 +28,7 @@ class _TrendingPageState extends State<TrendingPage> {
           ],
         ),
       ),
+      backgroundColor: Colors.white,
       body: Center(
         child: Column(children: [
           const Text('All Courses'),

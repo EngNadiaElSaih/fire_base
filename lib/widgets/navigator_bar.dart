@@ -16,6 +16,7 @@ class NavigatorBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
+      backgroundColor: Colors.white,
       items: [
         BottomNavigationBarItem(
           icon: GestureDetector(
@@ -76,8 +77,8 @@ class NavigatorBar extends StatelessWidget {
               );
             },
             child: const CircleAvatar(
-              backgroundImage:
-                  NetworkImage('https://your-profile-picture-url.com'),
+              backgroundImage: AssetImage("assets/images/profile.jpg"),
+              //  NetworkImage('https://your-profile-picture-url.com'),
             ),
           ),
           label: 'Profile',

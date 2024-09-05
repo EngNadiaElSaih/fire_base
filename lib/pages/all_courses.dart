@@ -12,6 +12,7 @@ class _AllCoursesState extends State<AllCourses> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [

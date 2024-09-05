@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/pages/login_page.dart';
 import 'package:flutter_application_1/widgets/navigator_bar.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -18,8 +20,11 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -30,6 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
+      backgroundColor: Colors.white,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -38,30 +44,32 @@ class _ProfilePageState extends State<ProfilePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  height: 150,
-                  alignment:
-                      Alignment.center, // يجعل محتويات `Container` في المنتصف
+                  height: 200,
+                  width: 300,
+                  // alignment: Alignment.center,
                   child: ListView(
-                    children: const [
+                    children: [
                       UserAccountsDrawerHeader(
-                        decoration: BoxDecoration(
-                          color: Colors
-                              .white, // يجعل خلفية `UserAccountsDrawerHeader` بيضاء
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
                         ),
                         accountName: Text(
-                          "Eng_Nadia El_Saih",
-                          style: TextStyle(
+                          user?.displayName?.isNotEmpty == true
+                              ? user!.displayName!
+                              : 'No Name',
+                          style: const TextStyle(
                               fontWeight: FontWeight.w800,
                               color: Color(0xff1D1B20)),
                         ),
                         accountEmail: Text(
-                          "nadiaelsaih@yahoo.com",
-                          style: TextStyle(
+                          user?.email ?? 'No Email',
+                          style: const TextStyle(
                               fontWeight: FontWeight.w600, color: Colors.black),
                         ),
-                        currentAccountPicture: CircleAvatar(
+                        currentAccountPicture: const CircleAvatar(
                           radius: 210,
-                          backgroundImage: AssetImage("assets/nadia.jpg"),
+                          backgroundImage:
+                              AssetImage("assets/images/profile.jpg"),
                         ),
                       ),
                     ],
@@ -72,8 +80,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 Container(
                   height: 50,
-                  decoration:
-                      const BoxDecoration(borderRadius: BorderRadius.zero),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
                   child: Card(
                     color: const Color(0xffEBEBEB),
                     child: Padding(
@@ -96,14 +105,76 @@ class _ProfilePageState extends State<ProfilePage> {
                 const SizedBox(
                   height: 10,
                 ),
-                const SizedBox(
+                Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Card(
+                    color: const Color(0xffEBEBEB),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "Edit",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w800,
+                                color: Colors.black),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text("Edit Profile"),
+                                    content: const Text(
+                                        "Would you like to edit your profile?"),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pop(); // إغلاق الديالوج
+                                        },
+                                        child: const Text("Cancel"),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          // تنفيذ إجراءات التعديل هنا
+                                          Navigator.of(context)
+                                              .pop(); // إغلاق الديالوج
+                                        },
+                                        child: const Text("Edit"),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            child: const Icon(
+                                Icons.keyboard_double_arrow_right_sharp),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
                   height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     TextButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          await FirebaseAuth.instance.signOut(); // تسجيل الخروج
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (_) => LoginPage()));
+                          // Navigator.pushReplacementNamed(context,
+                          //     '/login'); // توجيه المستخدم إلى صفحة تسجيل الدخول
+                        },
                         child: const Text(
                           "Logout",
                           style: TextStyle(

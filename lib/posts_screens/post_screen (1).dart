@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/server.dart';
 import 'package:flutter_application_1/posts_screens/post_screen%20(2).dart';
 import 'package:flutter_application_1/posts_screens/post_screen%20(3).dart';
+import 'package:flutter_application_1/widgets/navigator_bar.dart';
 
 class PostsScreen extends StatefulWidget {
   const PostsScreen({Key? key}) : super(key: key);
@@ -46,7 +47,7 @@ class _PostsScreenState extends State<PostsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Main Page'),
+        title: const Text('Main Chat Page'),
         actions: [
           IconButton(
             onPressed: () {
@@ -187,6 +188,7 @@ class _PostsScreenState extends State<PostsScreen> {
                 },
               ),
             ),
+      bottomNavigationBar: NavigatorBar(),
     );
   }
 }
