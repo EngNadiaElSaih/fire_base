@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/course.dart';
 import 'package:flutter_application_1/pages/course_details_page.dart';
+import 'package:flutter_application_1/utils/color_utilis.dart';
 
 class CoursesWidget extends StatefulWidget {
   final String rankValue;
@@ -28,58 +29,116 @@ class _CoursesWidgetState extends State<CoursesWidget> {
     return FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
       future: futureCall,
       builder: (ctx, snapshot) {
-        // عند الانتظار للحصول على البيانات
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
             child: CircularProgressIndicator(),
           );
         }
 
-        // عند حدوث خطأ أثناء جلب البيانات
         if (snapshot.hasError) {
           return Center(
             child: Text('Error: ${snapshot.error}'),
           );
         }
 
-        // تتبع عملية الجلب عبر الطباعة في وحدة التحكم
-        print('Rank Value: ${widget.rankValue}');
-        print('Documents found: ${snapshot.data?.docs.length}');
-
-        // إذا لم يتم العثور على بيانات
-        if (!snapshot.hasData || (snapshot.data?.docs.isEmpty ?? false)) {
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return const Center(
             child: Text('No courses found'),
           );
         }
 
-        // تحويل المستندات إلى كائنات Course
         var courses = snapshot.data!.docs.map((e) {
-          print('Document data: ${e.data()}');
           return Course.fromJson({'id': e.id, ...e.data()});
         }).toList();
 
-        // عرض الدورات في GridView
         return GridView.count(
           mainAxisSpacing: 15,
           crossAxisSpacing: 15,
           shrinkWrap: true,
           crossAxisCount: 2,
           children: List.generate(courses.length, (index) {
+            var course = courses[index];
             return InkWell(
               onTap: () {
-                // الانتقال إلى صفحة تفاصيل الدورة عند الضغط
-                Navigator.pushNamed(context, CourseDetailsPage.id,
-                    arguments: courses[index]);
+                Navigator.pushNamed(
+                  context,
+                  CourseDetailsPage.id,
+                  arguments: course,
+                );
               },
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: const Color(0xffE0E0E0),
-                  borderRadius: BorderRadius.circular(40),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: Center(
-                  child: Text(courses[index].title ?? 'No Name'),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: course.image != null
+                          ? Image.network(
+                              course.image!,
+                              fit: BoxFit.cover,
+                            )
+                          : const Icon(Icons.image, size: 50),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      course.title ?? 'No Title',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xff0157db),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        ...List.generate(
+                          (course.rating ?? 0)
+                              .floor(), // توليد عدد النجوم الكاملة
+                          (index) => const Icon(
+                            Icons.star,
+                            color: Colors.green,
+                            size: 20,
+                          ),
+                        ),
+                        if (course.rating != null &&
+                            course.rating! % 1 != 0) // تحقق من وجود نصف نجمة
+                          const Icon(
+                            Icons.star_half,
+                            color: Colors.green,
+                            size: 20,
+                          ),
+                        ...List.generate(
+                          5 -
+                              (course.rating?.ceil() ??
+                                  0), // توليد النجوم البيضاء المتبقية
+                          (index) => const Icon(
+                            Icons.star_border,
+                            color: Colors.green,
+                            size: 20,
+                          ),
+                        ),
+                        if (course.rating == null) const Text('No Rating'),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Icon(Icons.person, size: 16),
+                        const SizedBox(width: 4),
+                        Text(course.instructor?.name ?? 'No Instructor'),
+                      ],
+                    ),
+                    Text(
+                      '\$${course.price ?? 'No Price'}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: ColorUtility.main,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );

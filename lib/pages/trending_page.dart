@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/widgets/navigator_bar.dart';
 
 class TrendingPage extends StatefulWidget {
   const TrendingPage({super.key});
@@ -35,6 +36,7 @@ class _TrendingPageState extends State<TrendingPage> {
           SizedBox(height: 16),
         ]),
       ),
+      bottomNavigationBar: NavigatorBar(),
     );
   }
 }

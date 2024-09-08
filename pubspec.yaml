@@ -52,6 +52,11 @@ dependencies:
   sqflite: ^2.3.3+1  
   sqflite_common_ffi_web: ^0.4.3+1
   get_it: ^7.7.0  
+  image_picker: ^0.8.4+8
+  webview_flutter: ^4.0.0
+ 
+ 
+ 
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +83,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - .env
    
    
   #   - images/a_dot_ham.jpeg

@@ -40,6 +40,19 @@ final class LogoutFailed extends LogoutState {
   LogoutFailed(this.error);
 }
 
+// Reset Password State
+final class ResetPasswordState extends AuthState {}
+
+final class ResetPasswordLoading extends ResetPasswordState {}
+
+final class ResetPasswordSuccess extends ResetPasswordState {}
+
+final class ResetPasswordFailed extends ResetPasswordState {
+  final String error;
+
+  ResetPasswordFailed(this.error);
+}
+
 // General Auth States
 final class Authenticated extends AuthState {} // المستخدم مصدق عليه
 

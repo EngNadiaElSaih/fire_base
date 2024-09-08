@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'posts.dart';
 import 'dart:convert';
+import 'posts.dart';
 
 class Services {
   static var url = Uri.parse(
@@ -13,7 +13,7 @@ class Services {
   static const _UPDATE_POST_ACTION = 'UPDATE_POST';
   static const _DELETE_POST_ACTION = 'DELETE_POST';
 
-  //Method to create table
+  // Method to create table on the server
   static Future<String> createTable() async {
     try {
       var map = <String, dynamic>{};
@@ -32,7 +32,7 @@ class Services {
     }
   }
 
-  //Method to add Post
+  // Method to add Post to the server
   static Future<String> addPost(
       String userName, String postTitle, String postText) async {
     try {
@@ -55,7 +55,7 @@ class Services {
     }
   }
 
-  // Method to show Posts
+  // Method to show Posts from the server
   static Future<List<Posts>> getAllPosts() async {
     try {
       var map = <String, dynamic>{};
@@ -79,7 +79,7 @@ class Services {
     return parsed.map<Posts>((json) => Posts.fromJson(json)).toList();
   }
 
-  //Method to update post
+  // Method to update post on the server
   static Future<String> updatePost(
     String postId,
     String username,
@@ -107,7 +107,7 @@ class Services {
     }
   }
 
-  // Method to delete post
+  // Method to delete post from the server
   static Future<String> deletePost(String postId) async {
     try {
       var map = <String, dynamic>{};

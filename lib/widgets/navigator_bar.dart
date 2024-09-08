@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/pages/all_courses.dart';
+
+import 'package:flutter_application_1/pages/all_cources.dart';
 
 import 'package:flutter_application_1/pages/profile_page.dart';
 import 'package:flutter_application_1/pages/trending_page.dart';
-import 'package:flutter_application_1/posts_screens/post_screen%20(1).dart';
+
+import 'package:flutter_application_1/posts_screens/post_list_page.dart';
 
 class NavigatorBar extends StatelessWidget {
   const NavigatorBar({super.key});
@@ -57,7 +59,7 @@ class NavigatorBar extends StatelessWidget {
           icon: GestureDetector(
             onTap: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => PostsScreen()));
+                  context, MaterialPageRoute(builder: (_) => PostsListPage()));
             },
             child: const Icon(Icons.message),
           ),
