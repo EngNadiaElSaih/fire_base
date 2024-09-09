@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/posts_screens/post_list_page.dart';
 import 'package:flutter_application_1/posts_screens/sql_server.dart';
+import 'package:flutter_application_1/widgets/navigator_bar.dart';
 
 class AddPostPage extends StatefulWidget {
   @override
@@ -29,7 +30,18 @@ class _AddPostPageState extends State<AddPostPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Add Post')),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('Add PostsS'),
+            IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.shopping_cart_outlined)),
+          ],
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -81,6 +93,7 @@ class _AddPostPageState extends State<AddPostPage> {
           ),
         ),
       ),
+      bottomNavigationBar: NavigatorBar(),
     );
   }
 }

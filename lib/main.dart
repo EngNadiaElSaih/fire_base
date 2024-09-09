@@ -6,7 +6,6 @@ import 'package:flutter_application_1/blocs/course/course_bloc.dart';
 import 'package:flutter_application_1/blocs/lecture/lecture_bloc.dart';
 import 'package:flutter_application_1/cubit/auth_cubit.dart';
 import 'package:flutter_application_1/firebase_options.dart';
-
 import 'package:flutter_application_1/pages/course_details_page.dart';
 import 'package:flutter_application_1/pages/home_page.dart';
 import 'package:flutter_application_1/pages/login_page.dart';

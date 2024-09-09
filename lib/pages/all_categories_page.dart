@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // إضافة Firebase Firestore
 import 'package:flutter_application_1/utils/color_utilis.dart';
-import 'package:flutter_application_1/widgets/courses_widget.dart';
+import 'package:flutter_application_1/widgets/courses_category.dart';
+import 'package:flutter_application_1/widgets/label_widget.dart';
 
 class AllCategories extends StatefulWidget {
   AllCategories({Key? key}) : super(key: key);
@@ -11,6 +13,28 @@ class AllCategories extends StatefulWidget {
 
 class _AllCategoriesState extends State<AllCategories> {
   Map<int, bool> pressedStates = {}; // خريطة لتتبع حالة الضغط لكل عنصر
+  Map<int, List<String>> categoryData =
+      {}; // تخزين البيانات التي تم جلبها لكل عنصر
+
+  // دالة لجلب البيانات من Firestore
+  Future<void> fetchCategoryData(int categoryId) async {
+    try {
+      // جلب البيانات من Firestore بناءً على category_id
+      var snapshot = await FirebaseFirestore.instance
+          .collection('categories')
+          .doc(categoryId.toString())
+          .collection('courses')
+          .get();
+
+      // حفظ البيانات في الخريطة
+      setState(() {
+        categoryData[categoryId] =
+            snapshot.docs.map((doc) => doc['title'].toString()).toList();
+      });
+    } catch (error) {
+      print("Error fetching category data: $error");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +46,9 @@ class _AllCategoriesState extends State<AllCategories> {
           children: [
             const Text('Categories'),
             IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.shopping_cart_outlined)),
+              onPressed: () {},
+              icon: const Icon(Icons.shopping_cart_outlined),
+            ),
           ],
         ),
       ),
@@ -36,24 +61,16 @@ class _AllCategoriesState extends State<AllCategories> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(height: 40),
-                buildCategoryItem(context, 0, 'Business', [
-                  '${CoursesWidget(
-                    rankValue: 'search for',
-                  )}'
-                ]),
-                SizedBox(height: 10),
-                buildCategoryItem(
-                    context, 1, 'UI/UX', ['Design 101', 'Advanced UI/UX']),
-                SizedBox(height: 10),
-                buildCategoryItem(context, 2, 'Accounts',
-                    ['Accounting Basics', 'Finance 101']),
-                SizedBox(height: 10),
-                buildCategoryItem(context, 3, 'Software Engineering',
-                    ['Programming', 'Data Structures']),
-                SizedBox(height: 10),
-                buildCategoryItem(
-                    context, 4, 'SEO', ['SEO for Beginners', 'Advanced SEO']),
+                const SizedBox(height: 40),
+                buildCategoryItem(context, 0, 'Business'),
+                const SizedBox(height: 10),
+                buildCategoryItem(context, 1, 'UI/UX'),
+                const SizedBox(height: 10),
+                buildCategoryItem(context, 2, 'Accounts'),
+                const SizedBox(height: 10),
+                buildCategoryItem(context, 3, 'Software Engineering'),
+                const SizedBox(height: 10),
+                buildCategoryItem(context, 4, 'SEO'),
               ],
             ),
           ),
@@ -62,92 +79,99 @@ class _AllCategoriesState extends State<AllCategories> {
     );
   }
 
-  // دالة لبناء عنصر الفئة مع الدروب داون ليست
-  Widget buildCategoryItem(BuildContext context, int index, String title,
-      List<String> dropdownItems) {
+  Widget buildCategoryItem(BuildContext context, int index, String title) {
     bool isPressed = pressedStates[index] ?? false; // التحقق من حالة الضغط
+// البيانات المحملة
 
-    return Column(
-      children: [
-        InkWell(
-          onTap: () {
-            setState(() {
-              pressedStates[index] =
-                  !isPressed; // تغيير حالة الضغط للعنصر الحالي
-            });
-          },
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
+    return Column(children: [
+      InkWell(
+        onTap: () async {
+          setState(() {
+            pressedStates[index] = !isPressed; // تغيير حالة الضغط
+          });
+          if (!isPressed) {
+            // جلب البيانات عند الضغط
+            await fetchCategoryData(index);
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: isPressed
+                ? Colors.white
+                : ColorUtility.grayExtraLight, // لون الخلفية
+            borderRadius: BorderRadius.circular(5), // زوايا دائرية
+            border: Border.all(
               color: isPressed
-                  ? Colors.white
-                  : ColorUtility.grayExtraLight, // لون الخلفية
-              borderRadius: BorderRadius.circular(5), // زوايا دائرية
-              border: Border.all(
-                color: isPressed
-                    ? Colors.yellow
-                    : ColorUtility.grayExtraLight, // لون الإطار
-                width: 1,
-              ),
+                  ? Colors.yellow
+                  : ColorUtility.grayExtraLight, // لون الإطار
+              width: 1,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  title, // نص العنصر
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: isPressed
-                        ? ColorUtility.deepYellow
-                        : Colors.black, // لون النص
-                  ),
-                ),
-                Icon(
-                  isPressed
-                      ? Icons.keyboard_double_arrow_down_sharp
-                      : Icons
-                          .keyboard_double_arrow_right_sharp, // أيقونة حسب حالة الضغط
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title, // نص العنصر
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                   color: isPressed
                       ? ColorUtility.deepYellow
-                      : Colors.black, // لون الأيقونة
-                  size: 24,
+                      : Colors.black, // لون النص
                 ),
-              ],
+              ),
+              Icon(
+                isPressed
+                    ? Icons.keyboard_double_arrow_down_sharp
+                    : Icons
+                        .keyboard_double_arrow_right_sharp, // تغيير الأيقونة حسب الضغط
+                color: isPressed
+                    ? ColorUtility.deepYellow
+                    : Colors.black, // تغيير لون الأيقونة
+                size: 24,
+              ),
+            ],
+          ),
+        ),
+      ),
+      if (isPressed)
+        SingleChildScrollView(
+          child: Expanded(
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    LabelWidget(
+                      name: '',
+                      onSeeAllClicked: () {},
+                    ),
+                    // const CoursesWidget(
+                    //   rankValue: 'top rated',
+                    // ),
+                    // const SizedBox(
+                    //   height: 20,
+                    // ),
+////////////////////////////////////////////////////////////////////
+
+                    // const CoursesCategory(
+                    //   categoryValue: 'bussiness',
+                    // )
+                    ////////////////////
+
+                    CoursesCategory(
+                      categoryValue: 'Bussiness',
+                      onSeeAllClicked: () {},
+                    )
+
+////////////////////////////////////
+                  ],
+                ),
+              ),
             ),
           ),
         ),
-        // إذا تم الضغط، عرض الدروب داون ليست
-        if (isPressed)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-            child: Column(
-              children: dropdownItems.map((item) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        item,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const Icon(
-                        Icons.arrow_forward_ios,
-                        size: 16,
-                        color: Colors.black,
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-      ],
-    );
+    ]);
   }
 }

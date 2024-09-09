@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/course.dart';
 import 'package:flutter_application_1/utils/color_utilis.dart';
+import 'package:flutter_application_1/widgets/navigator_bar.dart';
 
 class AllCourses extends StatefulWidget {
   const AllCourses({Key? key}) : super(key: key);
@@ -68,6 +69,7 @@ class _AllCoursesState extends State<AllCourses> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -191,6 +193,7 @@ class _AllCoursesState extends State<AllCourses> {
           ],
         ),
       ),
+      bottomNavigationBar: NavigatorBar(),
     );
   }
 }

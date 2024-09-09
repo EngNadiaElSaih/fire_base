@@ -4,19 +4,21 @@ import 'package:flutter_application_1/models/course.dart';
 import 'package:flutter_application_1/pages/course_details_page.dart';
 import 'package:flutter_application_1/utils/color_utilis.dart';
 
-class CoursesWidget extends StatefulWidget {
-  final String rankValue;
+class CoursesCategory extends StatefulWidget {
+  final String categoryValue;
+  final Function onSeeAllClicked;
 
-  const CoursesWidget({
-    required this.rankValue,
+  const CoursesCategory({
+    required this.categoryValue,
+    required this.onSeeAllClicked,
     super.key,
   });
 
   @override
-  State<CoursesWidget> createState() => _CoursesWidgetState();
+  State<CoursesCategory> createState() => _CoursesCategoryState();
 }
 
-class _CoursesWidgetState extends State<CoursesWidget> {
+class _CoursesCategoryState extends State<CoursesCategory> {
   late Future<QuerySnapshot<Map<String, dynamic>>> futureCall;
 
   @override
@@ -24,7 +26,7 @@ class _CoursesWidgetState extends State<CoursesWidget> {
     super.initState();
     futureCall = FirebaseFirestore.instance
         .collection('courses')
-        .where('rank', isEqualTo: widget.rankValue)
+        .where('category', isEqualTo: widget.categoryValue)
         .get();
   }
 

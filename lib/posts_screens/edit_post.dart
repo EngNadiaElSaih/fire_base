@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/posts_screens/posts.dart';
 import 'package:flutter_application_1/posts_screens/sql_server.dart';
+import 'package:flutter_application_1/widgets/navigator_bar.dart';
 
 class EditPostPage extends StatefulWidget {
   final Posts post;
@@ -40,7 +41,18 @@ class _EditPostPageState extends State<EditPostPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Edit Post')),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('Edit Posts'),
+            IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.shopping_cart_outlined)),
+          ],
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -86,6 +98,7 @@ class _EditPostPageState extends State<EditPostPage> {
           ),
         ),
       ),
+      bottomNavigationBar: NavigatorBar(),
     );
   }
 }

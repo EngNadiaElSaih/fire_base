@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_application_1/pages/all_cources.dart';
+import 'package:flutter_application_1/pages/all_cources_page.dart';
 
 import 'package:flutter_application_1/pages/profile_page.dart';
 import 'package:flutter_application_1/pages/trending_page.dart';

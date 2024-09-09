@@ -23,7 +23,16 @@ class _PostsListPageState extends State<PostsListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('All Posts'),
+        backgroundColor: Colors.white,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('All Posts'),
+            IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.shopping_cart_outlined)),
+          ],
+        ),
       ),
       body: FutureBuilder<List<Posts>>(
         future: _posts,
