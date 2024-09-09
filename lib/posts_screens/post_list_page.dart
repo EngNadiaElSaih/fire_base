@@ -3,6 +3,7 @@ import 'package:flutter_application_1/posts_screens/addpost_page.dart';
 import 'package:flutter_application_1/posts_screens/edit_post.dart';
 import 'package:flutter_application_1/posts_screens/posts.dart';
 import 'package:flutter_application_1/posts_screens/sql_server.dart';
+import 'package:flutter_application_1/widgets/navigator_bar.dart';
 
 class PostsListPage extends StatefulWidget {
   @override
@@ -64,6 +65,7 @@ class _PostsListPageState extends State<PostsListPage> {
         },
         child: Icon(Icons.add),
       ),
+      bottomNavigationBar: NavigatorBar(),
     );
   }
 }

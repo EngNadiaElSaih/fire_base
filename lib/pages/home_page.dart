@@ -1,14 +1,10 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/cart_page.dart';
 import 'package:flutter_application_1/widgets/categories_widget.dart';
 import 'package:flutter_application_1/widgets/courses_widget.dart';
 import 'package:flutter_application_1/widgets/label_widget.dart';
 import 'package:flutter_application_1/widgets/navigator_bar.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:paymob_payment/paymob_payment.dart';
 
 class HomePage extends StatefulWidget {
   static const String id = 'home';

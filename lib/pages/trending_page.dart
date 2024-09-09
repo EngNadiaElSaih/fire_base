@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/models/trending.dart';
 import 'package:flutter_application_1/widgets/navigator_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TrendingPage extends StatefulWidget {
   const TrendingPage({super.key});
@@ -9,6 +11,9 @@ class TrendingPage extends StatefulWidget {
 }
 
 class _TrendingPageState extends State<TrendingPage> {
+// جلب العناصر الأكثر تداولًا من Firestore
+  var futureCall = FirebaseFirestore.instance.collection('trending').get();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,11 +35,72 @@ class _TrendingPageState extends State<TrendingPage> {
         ),
       ),
       backgroundColor: Colors.white,
-      body: Center(
-        child: Column(children: [
-          const Text('All Courses'),
-          SizedBox(height: 16),
-        ]),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Center(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+                height: 40,
+                child: FutureBuilder(
+                    future: futureCall,
+                    builder: (ctx, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+
+                      if (snapshot.hasError) {
+                        return Center(
+                          child: Text('Error: ${snapshot.error}'),
+                        );
+                      }
+
+                      if (!snapshot.hasData ||
+                          (snapshot.data?.docs.isEmpty ?? false)) {
+                        return const Center(
+                          child: Text('No trending items found'),
+                        );
+                      }
+
+                      // تحويل البيانات إلى قائمة من العناصر الأكثر تداولًا
+                      var trendingItems = List<Trending>.from(snapshot
+                              .data?.docs
+                              .map((e) =>
+                                  Trending.fromJson({'id': e.id, ...e.data()}))
+                              .toList() ??
+                          []);
+
+                      return ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: trendingItems.length,
+                        separatorBuilder: (context, index) => const SizedBox(
+                          width: 10,
+                        ),
+                        itemBuilder: (context, index) => InkWell(
+                          onTap: () async {
+                            // تنفيذ التنقل إلى صفحة جديدة تحتوي على التفاصيل المتعلقة بالعنصر المتداول
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: const Color(0xffE0E0E0),
+                              borderRadius: BorderRadius.circular(40),
+                            ),
+                            child: Center(
+                              child:
+                                  Text(trendingItems[index].name ?? 'No Name'),
+                            ),
+                          ),
+                        ),
+                      );
+                    })),
+          ]),
+        ),
       ),
       bottomNavigationBar: NavigatorBar(),
     );

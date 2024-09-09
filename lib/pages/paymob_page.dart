@@ -11,6 +11,7 @@ class PayMob extends StatefulWidget {
 }
 
 class _PayMobState extends State<PayMob> {
+  bool isPressed = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,32 +49,48 @@ class _PayMobState extends State<PayMob> {
             SizedBox(
               height: 20,
             ),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: ColorUtility.grayExtraLight, // لون خلفية المستطيل
-                borderRadius: BorderRadius.circular(5), // زوايا دائرية للمستطيل
-                border: Border.all(
-                    color: ColorUtility.grayExtraLight,
-                    width: 1), // تحديد حدود المستطيل
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Paymob', // نص العنصر
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black, // لون النص
+            InkWell(
+              onTap: () {
+                setState(() {
+                  isPressed = !isPressed; // تغيير الحالة عند الضغط
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: isPressed
+                      ? Colors.white
+                      : ColorUtility.grayExtraLight, // لون الخلفية
+                  borderRadius: BorderRadius.circular(5), // زوايا دائرية
+                  border: Border.all(
+                    color: isPressed
+                        ? Colors.yellow
+                        : ColorUtility.grayExtraLight, // لون الإطار
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Paymob', // نص العنصر
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: isPressed
+                            ? ColorUtility.deepYellow
+                            : Colors.black, // لون النص
+                      ),
                     ),
-                  ),
-                  Icon(
-                    Icons.adjust,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                ],
+                    Icon(
+                      Icons.adjust,
+                      color: isPressed
+                          ? ColorUtility.deepYellow
+                          : ColorUtility.grayExtraLight, // لون الأيقونة
+                      size: 24,
+                    ),
+                  ],
+                ),
               ),
             ),
             SizedBox(
