@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_application_1/utils/color_utilis.dart';
 import 'package:flutter_application_1/widgets/courses_category.dart';
+import 'package:flutter_application_1/widgets/courses_widget.dart';
 import 'package:flutter_application_1/widgets/label_widget.dart';
 
 class AllCategories extends StatefulWidget {
@@ -13,28 +14,20 @@ class AllCategories extends StatefulWidget {
 
 class _AllCategoriesState extends State<AllCategories> {
   Map<int, bool> pressedStates = {}; // خريطة لتتبع حالة الضغط لكل عنصر
-  Map<int, List<String>> categoryData =
-      {}; // تخزين البيانات التي تم جلبها لكل عنصر
 
-  // دالة لجلب البيانات من Firestore
-  Future<void> fetchCategoryData(int categoryId) async {
-    try {
-      // جلب البيانات من Firestore بناءً على category_id
-      var snapshot = await FirebaseFirestore.instance
-          .collection('categories')
-          .doc(categoryId.toString())
-          .collection('courses')
-          .get();
+  // قائمة العناوين
+  final List<String> categoryTitles = [
+    'Business',
+    'UI/UX',
+    'Software Engineering'
+  ];
 
-      // حفظ البيانات في الخريطة
-      setState(() {
-        categoryData[categoryId] =
-            snapshot.docs.map((doc) => doc['title'].toString()).toList();
-      });
-    } catch (error) {
-      print("Error fetching category data: $error");
-    }
-  }
+  // قائمة البيانات التي سيتم عرضها لكل عنوان
+  final List<String> categoryCourses = [
+    'Business Course 1',
+    'UI/UX Course 1',
+    'Software Engineering Course 1'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -62,15 +55,18 @@ class _AllCategoriesState extends State<AllCategories> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 40),
-                buildCategoryItem(context, 0, 'Business'),
-                const SizedBox(height: 10),
-                buildCategoryItem(context, 1, 'UI/UX'),
-                const SizedBox(height: 10),
-                buildCategoryItem(context, 2, 'Accounts'),
-                const SizedBox(height: 10),
-                buildCategoryItem(context, 3, 'Software Engineering'),
-                const SizedBox(height: 10),
-                buildCategoryItem(context, 4, 'SEO'),
+                // بناء كل عنصر من عناصر التصنيف
+                ...categoryTitles.asMap().entries.map((entry) {
+                  int index = entry.key;
+                  String title = entry.value;
+
+                  return Column(
+                    children: [
+                      buildCategoryItem(context, index, title),
+                      const SizedBox(height: 20), // المسافة الرأسية بين العناصر
+                    ],
+                  );
+                }).toList(),
               ],
             ),
           ),
@@ -82,6 +78,22 @@ class _AllCategoriesState extends State<AllCategories> {
   Widget buildCategoryItem(BuildContext context, int index, String title) {
     bool isPressed = pressedStates[index] ?? false; // التحقق من حالة الضغط
 
+    // بناء عنوان الدورة بناءً على التصنيف
+    String courseCategory = '';
+    switch (index) {
+      case 0:
+        courseCategory = 'Bussiness';
+        break;
+      case 1:
+        courseCategory = 'UI/UX';
+        break;
+      case 2:
+        courseCategory = 'Software Engineer';
+        break;
+      default:
+        courseCategory = 'General';
+    }
+
     return Column(
       children: [
         InkWell(
@@ -90,8 +102,7 @@ class _AllCategoriesState extends State<AllCategories> {
               pressedStates[index] = !isPressed; // تغيير حالة الضغط
             });
             if (!isPressed) {
-              // جلب البيانات عند الضغط
-              await fetchCategoryData(index);
+              // هنا يمكنك إضافة الكود لجلب البيانات من Firestore إذا كنت بحاجة لذلك
             }
           },
           child: Container(
@@ -139,16 +150,38 @@ class _AllCategoriesState extends State<AllCategories> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 LabelWidget(
-                  name: '',
-                  onSeeAllClicked: () {},
+                  name: 'Courses in $title',
+                  onSeeAllClicked: () {
+                    // التعامل مع حدث "See All"
+                  },
                 ),
-                CoursesCategory(
-                  categoryValue:
-                      "Bussiness", // تم تغيير القيمة إلى title هنا لتناسب الفئة المحددة
-                  onSeeAllClicked: () {},
-                ),
+                const SizedBox(
+                    height: 10), // المسافة بين LabelWidget و CoursesCategory
+                // CoursesCategory(
+                //   categoryValue: courseCategory, // تمرير عنوان الدورة هنا
+                //   onSeeAllClicked: () {},
+                // ),
+                // يمكنك إضافة عناصر أخرى هنا إذا لزم الأمر
+                //  LabelWidget(
+                //       name: 'Top Rated Courses',
+                //       onSeeAllClicked: () {},
+                //     ),
+                if (index == 0)
+                  const CoursesWidget(
+                    rankValue: 'top rated',
+                  ),
+                if (index == 1)
+                  const CoursesWidget(
+                    rankValue: 'search for',
+                  ),
+                if (index == 2)
+                  const CoursesWidget(
+                    rankValue: 'top seller',
+                  ),
+                const SizedBox(height: 20), // المسافة بين العناصر
               ],
             ),
           ),
