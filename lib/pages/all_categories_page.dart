@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // إضافة Firebase Firestore
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_application_1/utils/color_utilis.dart';
 import 'package:flutter_application_1/widgets/courses_category.dart';
 import 'package:flutter_application_1/widgets/label_widget.dart';
 
 class AllCategories extends StatefulWidget {
-  AllCategories({Key? key}) : super(key: key);
+  const AllCategories({Key? key}) : super(key: key);
 
   @override
   State<AllCategories> createState() => _AllCategoriesState();
@@ -81,97 +81,78 @@ class _AllCategoriesState extends State<AllCategories> {
 
   Widget buildCategoryItem(BuildContext context, int index, String title) {
     bool isPressed = pressedStates[index] ?? false; // التحقق من حالة الضغط
-// البيانات المحملة
 
-    return Column(children: [
-      InkWell(
-        onTap: () async {
-          setState(() {
-            pressedStates[index] = !isPressed; // تغيير حالة الضغط
-          });
-          if (!isPressed) {
-            // جلب البيانات عند الضغط
-            await fetchCategoryData(index);
-          }
-        },
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: isPressed
-                ? Colors.white
-                : ColorUtility.grayExtraLight, // لون الخلفية
-            borderRadius: BorderRadius.circular(5), // زوايا دائرية
-            border: Border.all(
+    return Column(
+      children: [
+        InkWell(
+          onTap: () async {
+            setState(() {
+              pressedStates[index] = !isPressed; // تغيير حالة الضغط
+            });
+            if (!isPressed) {
+              // جلب البيانات عند الضغط
+              await fetchCategoryData(index);
+            }
+          },
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
               color: isPressed
-                  ? Colors.yellow
-                  : ColorUtility.grayExtraLight, // لون الإطار
-              width: 1,
+                  ? Colors.white
+                  : ColorUtility.grayExtraLight, // لون الخلفية
+              borderRadius: BorderRadius.circular(5), // زوايا دائرية
+              border: Border.all(
+                color: isPressed
+                    ? Colors.yellow
+                    : ColorUtility.grayExtraLight, // لون الإطار
+                width: 1,
+              ),
             ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title, // نص العنصر
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  title, // نص العنصر
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: isPressed
+                        ? ColorUtility.deepYellow
+                        : Colors.black, // لون النص
+                  ),
+                ),
+                Icon(
+                  isPressed
+                      ? Icons.keyboard_double_arrow_down_sharp
+                      : Icons
+                          .keyboard_double_arrow_right_sharp, // تغيير الأيقونة حسب الضغط
                   color: isPressed
                       ? ColorUtility.deepYellow
-                      : Colors.black, // لون النص
+                      : Colors.black, // تغيير لون الأيقونة
+                  size: 24,
                 ),
-              ),
-              Icon(
-                isPressed
-                    ? Icons.keyboard_double_arrow_down_sharp
-                    : Icons
-                        .keyboard_double_arrow_right_sharp, // تغيير الأيقونة حسب الضغط
-                color: isPressed
-                    ? ColorUtility.deepYellow
-                    : Colors.black, // تغيير لون الأيقونة
-                size: 24,
-              ),
-            ],
-          ),
-        ),
-      ),
-      if (isPressed)
-        SingleChildScrollView(
-          child: Expanded(
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    LabelWidget(
-                      name: '',
-                      onSeeAllClicked: () {},
-                    ),
-                    // const CoursesWidget(
-                    //   rankValue: 'top rated',
-                    // ),
-                    // const SizedBox(
-                    //   height: 20,
-                    // ),
-////////////////////////////////////////////////////////////////////
-
-                    // const CoursesCategory(
-                    //   categoryValue: 'bussiness',
-                    // )
-                    ////////////////////
-
-                    CoursesCategory(
-                      categoryValue: 'Bussiness',
-                      onSeeAllClicked: () {},
-                    )
-
-////////////////////////////////////
-                  ],
-                ),
-              ),
+              ],
             ),
           ),
         ),
-    ]);
+        if (isPressed)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                LabelWidget(
+                  name: '',
+                  onSeeAllClicked: () {},
+                ),
+                CoursesCategory(
+                  categoryValue:
+                      "Bussiness", // تم تغيير القيمة إلى title هنا لتناسب الفئة المحددة
+                  onSeeAllClicked: () {},
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
   }
 }

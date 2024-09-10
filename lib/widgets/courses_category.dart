@@ -6,12 +6,11 @@ import 'package:flutter_application_1/utils/color_utilis.dart';
 
 class CoursesCategory extends StatefulWidget {
   final String categoryValue;
-  final Function onSeeAllClicked;
 
   const CoursesCategory({
     required this.categoryValue,
-    required this.onSeeAllClicked,
     super.key,
+    required Null Function() onSeeAllClicked,
   });
 
   @override
@@ -27,7 +26,7 @@ class _CoursesCategoryState extends State<CoursesCategory> {
     futureCall = FirebaseFirestore.instance
         .collection('courses')
         .where('category', isEqualTo: widget.categoryValue)
-        .get();
+        .get(); // جلب الدورات بناءً على الفئة
   }
 
   @override

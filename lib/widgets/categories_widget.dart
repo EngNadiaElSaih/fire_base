@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/category.dart';
-import 'package:flutter_application_1/pages/courses_by_category_page.dart';
+
 import 'package:flutter_application_1/widgets/corses_by_categories_page.dart';
 
 class CategoriesWidget extends StatefulWidget {
