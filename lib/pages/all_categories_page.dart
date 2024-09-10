@@ -23,11 +23,11 @@ class _AllCategoriesState extends State<AllCategories> {
   ];
 
   // قائمة البيانات التي سيتم عرضها لكل عنوان
-  final List<String> categoryCourses = [
-    'Business Course 1',
-    'UI/UX Course 1',
-    'Software Engineering Course 1'
-  ];
+  // final List<String> categoryCourses = [
+  //   'Business Course 1',
+  //   'UI/UX Course 1',
+  //   'Software Engineering Course 1'
+  // ];
 
   @override
   Widget build(BuildContext context) {

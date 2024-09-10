@@ -3,8 +3,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart'; // لإحضار اسم الملف
+import 'package:flutter_application_1/utils/color_utilis.dart';
+import 'package:flutter_application_1/widgets/label_widget.dart';
+import 'package:path/path.dart';
 import 'package:flutter_application_1/pages/login_page.dart';
 import 'package:flutter_application_1/widgets/navigator_bar.dart';
 
@@ -24,51 +25,43 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   User? user = FirebaseAuth.instance.currentUser;
-  String? imagePath;
   String? imageUrl;
 
-  // دالة لاختيار الصورة ورفعها
-  Future<void> _pickImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        imagePath = pickedFile.path;
-      });
-      await _uploadImageToFirebase(File(pickedFile.path));
-    }
-  }
-
-  // دالة رفع الصورة إلى Firebase Storage
-  Future<void> _uploadImageToFirebase(File imageFile) async {
+  // دالة لرفع الصورة إلى Firebase Storage باستخدام File Picker
+  Future<void> _uploadImageToFirebase() async {
     try {
-      // اسم الملف
-      String fileName = basename(imageFile.path);
+      var imageResult = await FilePicker.platform
+          .pickFiles(type: FileType.image, withData: true);
+      if (imageResult != null) {
+        var storageRef = FirebaseStorage.instance
+            .ref('profile_images/${imageResult.files.first.name}');
+        var uploadResult = await storageRef.putData(
+          imageResult.files.first.bytes!,
+          SettableMetadata(
+              contentType: 'image/${imageResult.files.first.extension}'),
+        );
 
-      // مرجع للصورة في Firebase Storage
-      Reference storageRef =
-          FirebaseStorage.instance.ref().child('profile_images/$fileName');
-
-      // رفع الصورة
-      UploadTask uploadTask = storageRef.putFile(imageFile);
-
-      // انتظار إكمال عملية الرفع
-      TaskSnapshot taskSnapshot = await uploadTask;
-
-      // الحصول على رابط الصورة
-      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-      setState(() {
-        imageUrl = downloadUrl;
-      });
-
-      // يمكنك هنا تحديث الصورة في Firebase Auth إذا أردت
-      await user?.updatePhotoURL(downloadUrl);
-
-      print('Image uploaded successfully: $downloadUrl');
+        if (uploadResult.state == TaskState.success) {
+          String downloadUrl = await storageRef.getDownloadURL();
+          setState(() {
+            imageUrl = downloadUrl;
+          });
+          await user?.updatePhotoURL(downloadUrl);
+          print('Image uploaded successfully: $downloadUrl');
+        }
+      } else {
+        print('No file selected');
+      }
     } catch (e) {
       print('Error uploading image: $e');
     }
   }
+
+  //////////////////// قائمة عناوين التصنيفات //////////////////////
+  final List<String> ProfileTitles = ['Edit', 'Setting', 'About Us'];
+
+  // تتبع حالة الضغط على كل عنصر
+  List<bool> pressedStates = [false, false, false];
 
   @override
   Widget build(BuildContext context) {
@@ -80,8 +73,9 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             const Text('Profile'),
             IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.shopping_cart_outlined)),
+              onPressed: () {},
+              icon: const Icon(Icons.shopping_cart_outlined),
+            ),
           ],
         ),
       ),
@@ -94,8 +88,10 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                // عرض معلومات المستخدم
                 Container(
-                  height: 200,
+                  alignment: Alignment.topCenter,
+                  height: 300,
                   width: 300,
                   child: ListView(
                     children: [
@@ -108,247 +104,66 @@ class _ProfilePageState extends State<ProfilePage> {
                               ? user!.displayName!
                               : 'No Name',
                           style: const TextStyle(
-                              fontWeight: FontWeight.w800,
+                              fontWeight: FontWeight.bold,
                               color: Color(0xff1D1B20)),
                         ),
                         accountEmail: Text(
                           user?.email ?? 'No Email',
                           style: const TextStyle(
-                              fontWeight: FontWeight.w600, color: Colors.black),
+                              fontWeight: FontWeight.w900, color: Colors.black),
                         ),
-                        currentAccountPicture: CircleAvatar(
-                          radius: 210,
-                          backgroundImage: imageUrl != null
-                              ? NetworkImage(imageUrl!)
-                              : const AssetImage("assets/images/profile.jpg")
-                                  as ImageProvider,
+                        currentAccountPicture: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              radius: 100, // زيادة حجم الصورة
+                              backgroundImage: imageUrl != null
+                                  ? NetworkImage(imageUrl!)
+                                  : const AssetImage(
+                                          "assets/images/profile.jpg")
+                                      as ImageProvider,
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.image),
+                              onPressed: _uploadImageToFirebase,
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 40,
-                ),
-                // زر تعديل المعلومات
-                ExpansionTile(
-                  title: Text('Edit'),
-                  children: [
-                    ListTile(
-                      title: Text('Change Profile Picture'),
-                      trailing: IconButton(
-                        icon: Icon(Icons.person),
-                        onPressed: () async {
-                          var imageResult = await FilePicker.platform
-                              .pickFiles(type: FileType.image, withData: true);
-                          if (imageResult != null) {
-                            var storageRef = FirebaseStorage.instance
-                                .ref('images/${imageResult.files.first.name}');
-                            var uploadResult = await storageRef.putData(
-                                imageResult.files.first.bytes!,
-                                SettableMetadata(
-                                  contentType:
-                                      'image/${imageResult.files.first.name.split('.').last}',
-                                ));
+                const SizedBox(height: 40),
 
-                            if (uploadResult.state == TaskState.success) {
-                              var downloadUrl =
-                                  await uploadResult.ref.getDownloadURL();
-                              print(
-                                  'Image uploaded successfully. URL: $downloadUrl');
-                            }
-                          } else {
-                            print('No file selected');
-                          }
-                        },
-                      ),
-                    ),
-                    ListTile(
-                      title: Text('Change User Name:'),
-                      subtitle: TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Enter new user name',
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (value) {
-                          // Handle name change logic here
-                          print('New User Name: $value');
-                        },
-                      ),
-                    ),
-                  ],
+                /////////////////////////////////// قائمة التصنيفات
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: ProfileTitles.length,
+                  itemBuilder: (context, index) {
+                    return buildProfileItem(
+                        context, index, ProfileTitles[index]);
+                  },
                 ),
 
-                Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Card(
-                    color: const Color(0xffEBEBEB),
-                    child: InkWell(
-                      onTap: _pickImage, // استدعاء اختيار الصورة
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Text(
-                              "Edit",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.black),
-                            ),
-                            Icon(Icons.keyboard_double_arrow_right_sharp),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 20),
 
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Card(
-                    color: const Color(0xffEBEBEB),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "Setting",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                color: Colors.black),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => EditPage(), // استبدل  ال
-                              //   ),
-                              // );
-                            },
-                            child: const Icon(
-                                Icons.keyboard_double_arrow_right_sharp),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                //container2
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Card(
-                    color: const Color(0xffEBEBEB),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "Change Profile Image",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                color: Colors.black),
-                          ),
-                          GestureDetector(
-                            onTap: () async {
-                              var imageResult = await FilePicker.platform
-                                  .pickFiles(
-                                      type: FileType.image, withData: true);
-                              if (imageResult != null) {
-                                var storageRef = FirebaseStorage.instance.ref(
-                                    'images/${imageResult.files.first.name}');
-                                var uploadResult = await storageRef.putData(
-                                    imageResult.files.first.bytes!,
-                                    SettableMetadata(
-                                      contentType:
-                                          'image/${imageResult.files.first.name.split('.').last}',
-                                    ));
-
-                                if (uploadResult.state == TaskState.success) {
-                                  var downloadUrl =
-                                      await uploadResult.ref.getDownloadURL();
-                                  print('>>>>>Image upload${downloadUrl}');
-                                }
-                              } else {
-                                print('No file selected');
-                              }
-                            },
-                            child: const Icon(
-                                Icons.keyboard_double_arrow_right_sharp),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                //container3
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Card(
-                    color: const Color(0xffEBEBEB),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "About Us",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                color: Colors.black),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => EditPage(), // استبدل ا
-                              //   ),
-                              // );
-                            },
-                            child: const Icon(
-                                Icons.keyboard_double_arrow_right_sharp),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
+                //////////////////logout/////////////////////////// زر تسجيل الخروج
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     TextButton(
                       onPressed: () async {
-                        await FirebaseAuth.instance.signOut(); // تسجيل الخروج
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (_) => LoginPage()));
+                        await FirebaseAuth.instance.signOut();
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()));
                       },
                       child: const Text(
                         "Logout",
                         style: TextStyle(
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w800,
                             color: Color.fromRGBO(255, 82, 82, 1)),
                       ),
                     ),
@@ -360,6 +175,98 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
       bottomNavigationBar: NavigatorBar(),
+    );
+  }
+
+  Widget buildProfileItem(BuildContext context, int index, String title) {
+    bool isPressed = pressedStates[index] ?? false;
+
+    return Column(
+      children: [
+        InkWell(
+          onTap: () {
+            setState(() {
+              pressedStates[index] = !isPressed;
+            });
+          },
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: isPressed ? Colors.white : ColorUtility.grayExtraLight,
+              borderRadius: BorderRadius.circular(5),
+              border: Border.all(
+                color: isPressed ? Colors.yellow : ColorUtility.grayExtraLight,
+                width: 2,
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: isPressed ? ColorUtility.deepYellow : Colors.black,
+                  ),
+                ),
+                Icon(
+                  isPressed
+                      ? Icons.keyboard_double_arrow_down_sharp
+                      : Icons.keyboard_double_arrow_right_sharp,
+                  color: isPressed ? ColorUtility.deepYellow : Colors.black,
+                  size: 24,
+                ),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: 20),
+        if (isPressed)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                if (index == 0)
+                  Row(
+                    children: [
+                      const Text("Change Your Profile Picture?"),
+                      const SizedBox(width: 10),
+                      IconButton(
+                        icon: const Icon(Icons.image),
+                        onPressed: _uploadImageToFirebase,
+                      ),
+                    ],
+                  ),
+                if (index == 1)
+                  Row(
+                    children: [
+                      const Text("Change Your theme Color?",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: ColorUtility.main,
+                          )),
+                      const SizedBox(width: 10),
+                      IconButton(
+                        icon: const Icon(Icons.format_color_fill),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                if (index == 2)
+                  Text("Egypt Council Is The Best Place \n Thank You For All",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: ColorUtility.main,
+                      )),
+              ],
+            ),
+          ),
+      ],
     );
   }
 }
