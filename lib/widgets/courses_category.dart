@@ -24,7 +24,7 @@ class _CoursesCategoryState extends State<CoursesCategory> {
   void initState() {
     super.initState();
     futureCall = FirebaseFirestore.instance
-        .collection('courses')
+        .collection('categories')
         .where('category', isEqualTo: widget.categoryValue)
         .get(); // جلب الدورات بناءً على الفئة
   }

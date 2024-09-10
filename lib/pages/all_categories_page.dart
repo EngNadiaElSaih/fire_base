@@ -35,7 +35,7 @@ class _AllCategoriesState extends State<AllCategories> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             const Text('Categories'),
             IconButton(

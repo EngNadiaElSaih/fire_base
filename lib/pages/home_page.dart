@@ -90,6 +90,15 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 20),
 
+                // عرض أفضل الدورات من حيث المبيعات
+                LabelWidget(
+                  name: 'Top Seller Courses',
+                  onSeeAllClicked: () {},
+                ),
+                const CoursesWidget(
+                  rankValue: 'top seller',
+                ),
+
                 // عرض أفضل الدورات في مجال تكنولوجيا المعلومات
                 LabelWidget(
                   name: 'Top Courses In IT',
@@ -99,15 +108,6 @@ class _HomePageState extends State<HomePage> {
                   rankValue: 'top courses',
                 ),
                 const SizedBox(height: 20),
-
-                // عرض أفضل الدورات من حيث المبيعات
-                LabelWidget(
-                  name: 'Top Seller Courses',
-                  onSeeAllClicked: () {},
-                ),
-                const CoursesWidget(
-                  rankValue: 'top seller',
-                ),
               ],
             ),
           ),

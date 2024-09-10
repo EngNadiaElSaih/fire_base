@@ -59,6 +59,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                         MaterialPageRoute(
                           builder: (context) => CoursesByCategoryPage(
                             categoryValue: category.name ?? 'No Name',
+                            index: 0,
                           ),
                         ),
                       );
