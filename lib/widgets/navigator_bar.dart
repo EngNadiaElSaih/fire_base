@@ -61,7 +61,7 @@ class NavigatorBar extends StatelessWidget {
               Navigator.push(
                   context, MaterialPageRoute(builder: (_) => PostsListPage()));
             },
-            child: const Icon(Icons.message),
+            child: const Icon(Icons.chat_bubble_outline),
           ),
           label: 'Message',
         ),

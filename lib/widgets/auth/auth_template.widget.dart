@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/login_page.dart';
+import 'package:flutter_application_1/pages/reset_password_page.dart';
 import 'package:flutter_application_1/pages/signup_page.dart';
 import 'package:flutter_application_1/utils/color_utilis.dart';
 import 'package:flutter_application_1/widgets/Custom_text_button.dart';
@@ -163,8 +164,15 @@ class _AuthTemplateWidgetState extends State<AuthTemplateWidget> {
                   children: [
                     widget.body,
                     CustomTextButton(
-                      label: 'Forgot Password ?',
-                      onPressed: () {},
+                      label: 'Forget Password ?',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ResetPasswordPage(),
+                          ),
+                        );
+                      },
                     ),
                     Row(
                       children: [
