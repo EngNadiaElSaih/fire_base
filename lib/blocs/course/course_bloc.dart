@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_application_1/models/course.dart';
 import 'package:flutter_application_1/models/lecture.dart';
 import 'package:flutter_application_1/utils/app_enums.dart';
-
 import 'package:meta/meta.dart';
 
 part 'course_event.dart';
@@ -15,8 +14,10 @@ class CourseBloc extends Bloc<CourseEvent, CourseState> {
     on<CourseFetchEvent>(_onGetCourse);
     on<CourseOptionChosenEvent>(_onCourseOptionChosen);
   }
+
   Course? course;
 
+  // تعديل: هنا جلب المحاضرات من Firebase Firestore
   Future<List<Lecture>?> getLectures() async {
     if (course == null) {
       return null;
@@ -27,7 +28,6 @@ class CourseBloc extends Bloc<CourseEvent, CourseState> {
           .doc(course!.id)
           .collection('lectures')
           .get();
-      print('Raw data from Firestore: ${result.docs.map((e) => e.data())}');
 
       return result.docs
           .map((e) => Lecture.fromJson({
@@ -36,18 +36,22 @@ class CourseBloc extends Bloc<CourseEvent, CourseState> {
               }))
           .toList();
     } catch (e) {
-      print('Lectures fetched successfully2');
+      print('Error fetching lectures: $e');
       return null;
     }
   }
 
   FutureOr<void> _onGetCourse(
       CourseFetchEvent event, Emitter<CourseState> emit) async {
-    if (course != null) {
-      course = null;
+    course = event.course; // قم بتحديث الدورة الحالية
+
+    // بعد تحميل الدورة، قم بجلب المحاضرات
+    List<Lecture>? lectures = await getLectures();
+    if (lectures != null && lectures.isNotEmpty) {
+      emit(CourseLecturesFetched(lectures)); // إرسال الحالة مع المحاضرات
+    } else {
+      emit(CourseLecturesEmpty()); // إرسال حالة فارغة إذا لم توجد محاضرات
     }
-    course = event.course;
-    emit(CourseOptionStateChanges(CourseOptions.Lecture));
   }
 
   FutureOr<void> _onCourseOptionChosen(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_application_1/pages/cart_page.dart';
 import 'package:flutter_application_1/utils/color_utilis.dart';
-import 'package:flutter_application_1/widgets/courses_category.dart';
 import 'package:flutter_application_1/widgets/courses_widget.dart';
 import 'package:flutter_application_1/widgets/label_widget.dart';
 
@@ -23,11 +22,11 @@ class _AllCategoriesState extends State<AllCategories> {
   ];
 
   // قائمة البيانات التي سيتم عرضها لكل عنوان
-  // final List<String> categoryCourses = [
-  //   'Business Course 1',
-  //   'UI/UX Course 1',
-  //   'Software Engineering Course 1'
-  // ];
+  final List<String> categoryCourses = [
+    'Business Course 1',
+    'UI/UX Course 1',
+    'Software Engineering Course 1'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +38,12 @@ class _AllCategoriesState extends State<AllCategories> {
           children: [
             const Text('Categories'),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CartPage()),
+                );
+              },
               icon: const Icon(Icons.shopping_cart_outlined),
             ),
           ],
@@ -66,7 +70,7 @@ class _AllCategoriesState extends State<AllCategories> {
                       const SizedBox(height: 20), // المسافة الرأسية بين العناصر
                     ],
                   );
-                }).toList(),
+                }),
               ],
             ),
           ),
@@ -79,19 +83,14 @@ class _AllCategoriesState extends State<AllCategories> {
     bool isPressed = pressedStates[index] ?? false; // التحقق من حالة الضغط
 
     // بناء عنوان الدورة بناءً على التصنيف
-    String courseCategory = '';
     switch (index) {
       case 0:
-        courseCategory = 'Bussiness';
         break;
       case 1:
-        courseCategory = 'UI/UX';
         break;
       case 2:
-        courseCategory = 'Software Engineer';
         break;
       default:
-        courseCategory = 'General';
     }
 
     return Column(
@@ -160,15 +159,7 @@ class _AllCategoriesState extends State<AllCategories> {
                 ),
                 const SizedBox(
                     height: 10), // المسافة بين LabelWidget و CoursesCategory
-                // CoursesCategory(
-                //   categoryValue: courseCategory, // تمرير عنوان الدورة هنا
-                //   onSeeAllClicked: () {},
-                // ),
-                // يمكنك إضافة عناصر أخرى هنا إذا لزم الأمر
-                //  LabelWidget(
-                //       name: 'Top Rated Courses',
-                //       onSeeAllClicked: () {},
-                //     ),
+
                 if (index == 0)
                   const CoursesWidget(
                     rankValue: 'top rated',

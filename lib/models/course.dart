@@ -41,7 +41,7 @@ class Course {
         : null;
   }
 
-  get imageUrl => null;
+  //get imageUrl => null;
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};

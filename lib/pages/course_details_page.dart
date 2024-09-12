@@ -158,7 +158,7 @@ class __BodyWidgetState extends State<_BodyWidget> {
           children: [
             LectureChipsWidget(
               selectedOption: (state is CourseOptionStateChanges)
-                  ? state.courseOption
+                  ? state.courseOptions
                   : null,
               onChanged: (courseOption) {
                 context
@@ -173,7 +173,7 @@ class __BodyWidgetState extends State<_BodyWidget> {
                 child: (state is CourseOptionStateChanges)
                     ? CourseOptionsWidgets(
                         course: context.read<CourseBloc>().course!,
-                        courseOption: state.courseOption,
+                        courseOption: state.courseOptions,
                         onLectureChosen: (lecture) async {
                           try {
                             FirebaseFirestore.instance

@@ -79,8 +79,10 @@ class NavigatorBar extends StatelessWidget {
               );
             },
             child: const CircleAvatar(
-              backgroundImage: AssetImage("assets/images/profile.jpg"),
-              //  NetworkImage('https://your-profile-picture-url.com'),
+              backgroundImage:
+                  //AssetImage("assets/images/profile.jpg"),
+                  NetworkImage(
+                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoQgkH2cbQhMnS7wT5kwXg2St0oExJIVuIsQ&s'),
             ),
           ),
           label: 'Profile',

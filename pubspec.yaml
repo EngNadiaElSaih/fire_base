@@ -53,7 +53,8 @@ dependencies:
   sqflite_common_ffi_web: ^0.4.3+1
   get_it: ^7.7.0  
   image_picker: ^0.8.4+8
-  webview_flutter: ^4.0.0
+
+ 
  
  
  

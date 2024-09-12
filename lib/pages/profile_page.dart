@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -6,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/login_page.dart';
 import 'package:flutter_application_1/utils/color_utilis.dart';
 import 'package:flutter_application_1/widgets/navigator_bar.dart';
-import 'package:path/path.dart';
 
 class ProfilePage extends StatefulWidget {
   final int selectedIndex;
@@ -72,12 +70,12 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             const Text('Profile'),
-            SizedBox(
-              width: 60,
-            ),
+            // SizedBox(
+            //   width: 60,
+            // ),
             IconButton(
               onPressed: () {},
               icon: const Icon(Icons.shopping_cart_outlined),
@@ -89,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -135,8 +133,9 @@ class _ProfilePageState extends State<ProfilePage> {
                               radius: 200, // زيادة حجم الصورة
                               backgroundImage: imageUrl != null
                                   ? NetworkImage(
-                                      imageUrl!) // عرض الصورة المرفوعة
-                                  : AssetImage("assets/images/profile.jpg")
+                                      '${imageUrl}') // عرض الصورة المرفوعة
+                                  : NetworkImage(
+                                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoQgkH2cbQhMnS7wT5kwXg2St0oExJIVuIsQ&s")
                                       as ImageProvider,
                             ),
                             Positioned(
@@ -144,7 +143,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               left: 20, // أقصى اليمين
                               child: IconButton(
                                 iconSize: 40, // قم بزيادة حجم الأيقونة إذا أردت
-                                color: Colors.white,
+                                color: Colors.black,
                                 icon: const Icon(Icons.image),
                                 onPressed:
                                     _uploadImageToFirebase, // استدعاء الدالة لرفع الصورة
@@ -156,9 +155,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     ],
                   ),
                 ),
-                //   const SizedBox(height: 10),
 
-                /////////////////////////////////// قائمة التصنيفات
+                /////////////////////////استدعاء////////// قائمة التصنيفات
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -200,7 +198,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget buildProfileItem(BuildContext context, int index, String title) {
-    bool isPressed = pressedStates[index] ?? false;
+    bool isPressed = pressedStates[index];
 
     return Column(
       children: [

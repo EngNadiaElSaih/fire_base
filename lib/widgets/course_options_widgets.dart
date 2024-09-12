@@ -78,7 +78,7 @@ class _CourseOptionsWidgetsState extends State<CourseOptionsWidgets> {
                   setState(() {});
                 },
                 child: Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   decoration: BoxDecoration(
                     color: selectedLecture?.id == lectures![index].id
                         ? ColorUtility.deepYellow
@@ -86,12 +86,112 @@ class _CourseOptionsWidgetsState extends State<CourseOptionsWidgets> {
                     borderRadius: BorderRadius.circular(40),
                   ),
                   child: Center(
-                    child: Text(
-                      lectures![index].title ?? 'No Name',
-                      style: TextStyle(
-                          color: selectedLecture?.id == lectures![index].id
-                              ? Colors.white
-                              : Colors.black),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                lectures![index].title ?? 'No Name',
+                                style: TextStyle(
+                                    color: selectedLecture?.id ==
+                                            lectures![index].id
+                                        ? Colors.white
+                                        : Colors.black),
+                              ),
+                              IconButton(
+                                icon: selectedLecture?.id == lectures![index].id
+                                    ? Icon(
+                                        Icons.download,
+                                        color: Colors.white,
+                                      )
+                                    : Icon(Icons.download),
+                                onPressed: () {},
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                lectures![index].description ??
+                                    'No Description',
+                                style: TextStyle(
+                                    color: selectedLecture?.id ==
+                                            lectures![index].id
+                                        ? Colors.white
+                                        : Colors.black),
+                              ),
+                            ],
+                          ),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'lorem ipsum dolor sit \n amet consectetur.',
+                                  style: TextStyle(
+                                      color: selectedLecture?.id ==
+                                              lectures![index].id
+                                          ? Colors.white
+                                          : Colors.black),
+                                ),
+                              ]),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Duration',
+                                    style: TextStyle(
+                                        color: selectedLecture?.id ==
+                                                lectures![index].id
+                                            ? Colors.white
+                                            : Colors.black),
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    lectures![index].duration?.toString() ??
+                                        'No Duration',
+                                    style: TextStyle(
+                                        color: selectedLecture?.id ==
+                                                lectures![index].id
+                                            ? Colors.white
+                                            : Colors.black),
+                                  ),
+                                  SizedBox(
+                                    width: 3,
+                                  ),
+                                  Text(
+                                    'min',
+                                    style: TextStyle(
+                                        color: selectedLecture?.id ==
+                                                lectures![index].id
+                                            ? Colors.white
+                                            : Colors.black),
+                                  ),
+                                ],
+                              ),
+                              IconButton(
+                                iconSize: 50,
+                                icon: selectedLecture?.id == lectures![index].id
+                                    ? Icon(
+                                        Icons.play_circle_outline,
+                                        color: Colors.white,
+                                      )
+                                    : Icon(Icons.play_circle_outline),
+                                onPressed: () {},
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -101,7 +201,150 @@ class _CourseOptionsWidgetsState extends State<CourseOptionsWidgets> {
         }
 ////////////////download/////
       case CourseOptions.Download:
-        return const SizedBox.shrink();
+        if (isLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        if (lectures == null || (lectures!.isEmpty)) {
+          return const Center(
+            child: Text('No lectures found'),
+          );
+        } else {
+          return GridView.count(
+            mainAxisSpacing: 15,
+            crossAxisSpacing: 15,
+            shrinkWrap: true,
+            crossAxisCount: 2,
+            children: List.generate(lectures!.length, (index) {
+              return InkWell(
+                onTap: () {
+                  widget.onLectureChosen(lectures![index]);
+                  selectedLecture = lectures![index];
+                  setState(() {});
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  decoration: BoxDecoration(
+                    color: selectedLecture?.id == lectures![index].id
+                        ? ColorUtility.deepYellow
+                        : const Color(0xffE0E0E0),
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                lectures![index].title ?? 'No Name',
+                                style: TextStyle(
+                                    color: selectedLecture?.id ==
+                                            lectures![index].id
+                                        ? Colors.white
+                                        : Colors.black),
+                              ),
+                              IconButton(
+                                icon: selectedLecture?.id == lectures![index].id
+                                    ? Icon(
+                                        Icons.download_done,
+                                        color: Colors.white,
+                                      )
+                                    : Icon(Icons.download_done),
+                                onPressed: () {},
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                lectures![index].description ??
+                                    'No Description',
+                                style: TextStyle(
+                                    color: selectedLecture?.id ==
+                                            lectures![index].id
+                                        ? Colors.white
+                                        : Colors.black),
+                              ),
+                            ],
+                          ),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'lorem ipsum dolor sit \n amet consectetur.',
+                                  style: TextStyle(
+                                      color: selectedLecture?.id ==
+                                              lectures![index].id
+                                          ? Colors.white
+                                          : Colors.black),
+                                ),
+                              ]),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Duration',
+                                    style: TextStyle(
+                                        color: selectedLecture?.id ==
+                                                lectures![index].id
+                                            ? Colors.white
+                                            : Colors.black),
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    lectures![index].duration?.toString() ??
+                                        'No Duration',
+                                    style: TextStyle(
+                                        color: selectedLecture?.id ==
+                                                lectures![index].id
+                                            ? Colors.white
+                                            : Colors.black),
+                                  ),
+                                  SizedBox(
+                                    width: 3,
+                                  ),
+                                  Text(
+                                    'min',
+                                    style: TextStyle(
+                                        color: selectedLecture?.id ==
+                                                lectures![index].id
+                                            ? Colors.white
+                                            : Colors.black),
+                                  ),
+                                ],
+                              ),
+                              IconButton(
+                                iconSize: 50,
+                                icon: selectedLecture?.id == lectures![index].id
+                                    ? Icon(
+                                        Icons.play_circle_outline,
+                                        color: Colors.white,
+                                      )
+                                    : Icon(Icons.play_circle_outline),
+                                onPressed: () {},
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+          );
+        }
 ////cerfificate///////////////
       case CourseOptions.Certificate:
         return Column(

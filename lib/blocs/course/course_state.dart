@@ -1,12 +1,20 @@
 part of 'course_bloc.dart';
 
 @immutable
-sealed class CourseState {}
+abstract class CourseState {}
 
-final class CourseInitial extends CourseState {}
+class CourseInitial extends CourseState {}
+
+class CourseLecturesFetched extends CourseState {
+  final List<Lecture> lectures;
+
+  CourseLecturesFetched(this.lectures);
+}
+
+class CourseLecturesEmpty extends CourseState {}
 
 class CourseOptionStateChanges extends CourseState {
-  final CourseOptions courseOption;
+  final CourseOptions courseOptions;
 
-  CourseOptionStateChanges(this.courseOption);
+  CourseOptionStateChanges(this.courseOptions);
 }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/category.dart';
+import 'package:flutter_application_1/utils/color_utilis.dart';
 
 import 'package:flutter_application_1/widgets/corses_by_categories_page.dart';
 
@@ -13,7 +14,7 @@ class CategoriesWidget extends StatefulWidget {
 
 class _CategoriesWidgetState extends State<CategoriesWidget> {
   var futureCall = FirebaseFirestore.instance.collection('categories').get();
-
+  Category? selectedcategory;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -65,15 +66,22 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                       );
                     },
                     child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: const Color(0xffE0E0E0),
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                      child: Center(
-                        child: Text(category.name ?? 'No Name'),
-                      ),
-                    ),
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: selectedcategory?.name == category.name
+                              ? ColorUtility.deepYellow
+                              : const Color(0xffE0E0E0),
+                          borderRadius: BorderRadius.circular(40),
+                        ),
+                        child: Center(
+                          child: Text(
+                            category.name ?? 'No Name',
+                            style: TextStyle(
+                                color: selectedcategory == category.name
+                                    ? Colors.white
+                                    : Colors.black),
+                          ),
+                        )),
                   );
                 },
               );

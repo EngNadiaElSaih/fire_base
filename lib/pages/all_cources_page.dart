@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/course.dart';
+import 'package:flutter_application_1/pages/cart_page.dart';
 import 'package:flutter_application_1/utils/color_utilis.dart';
 import 'package:flutter_application_1/widgets/navigator_bar.dart';
 
@@ -75,7 +76,12 @@ class _AllCoursesState extends State<AllCourses> {
           children: [
             const Text('Courses'),
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const CartPage()),
+                  );
+                },
                 icon: const Icon(Icons.shopping_cart_outlined)),
           ],
         ),
