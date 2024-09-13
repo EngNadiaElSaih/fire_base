@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_application_1/models/course.dart';
 import 'package:flutter_application_1/pages/paymob_page.dart';
 import 'package:flutter_application_1/utils/color_utilis.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({Key? key}) : super(key: key);
@@ -15,8 +16,10 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   List<Course> courses = [];
   List<Course> filteredCourses = [];
-  bool isAscending = true;
   bool isLoading = true;
+  Course? selectedCourse;
+
+  Course? get course => null; // لحفظ الكورس الذي تم اختياره
 
   @override
   void initState() {
@@ -69,167 +72,349 @@ class _CartPageState extends State<CartPage> {
           ),
         ),
       ),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Expanded(
-              child: isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : ListView.builder(
-                      itemCount: filteredCourses.length,
-                      itemBuilder: (context, index) {
-                        var course = filteredCourses[index];
-                        return ExpansionTile(
-                          title: Row(
+            if (selectedCourse != null) // عرض تفاصيل الكورس إذا كان موجودًا
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Hero(
-                                tag: course.image ?? '',
+                                tag: selectedCourse?.image ?? '',
                                 child: Container(
                                   width: 100,
                                   height: 100,
                                   child: Image.network(
-                                    course.image ?? '',
+                                    selectedCourse?.image ?? '',
                                     fit: BoxFit.cover,
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      course.title ?? 'No Title',
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xff0157db),
-                                      ),
-                                    ),
+                            ],
+                          ),
+                          SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                selectedCourse!.title ?? 'No Title',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xff0157db),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Icon(Icons.person, size: 16),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '${selectedCourse?.instructor?.name ?? 'No Instructor'}',
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  if (selectedCourse?.rating == null)
+                                    const Text('No Rating'),
+                                  if (selectedCourse?.rating != null)
                                     Row(
                                       children: [
-                                        Icon(Icons.person, size: 16),
-                                        const SizedBox(width: 4),
-                                        Text(course.instructor?.name ??
-                                            'No Instructor'),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
+                                        Text(
+                                          selectedCourse!.rating!.toString(),
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: ColorUtility.gray,
+                                          ),
+                                        ),
+                                        SizedBox(width: 3),
+                                        // عرض النجوم بناءً على التقييم
                                         ...List.generate(
-                                          course.rating?.floor() ??
-                                              0, // توليد عدد النجوم الكاملة
+                                          selectedCourse!.rating!.floor(),
                                           (index) => const Icon(
                                             Icons.star,
-                                            color: Colors
-                                                .green, // لون النجمة الخضراء
+                                            color: Colors.green,
                                             size: 20,
                                           ),
                                         ),
-                                        if (course.rating != null &&
-                                            course.rating! % 1 !=
-                                                0) // تحقق من وجود نصف نجمة
+                                        // عرض نصف نجمة إذا كان التقييم يحتوي على كسر
+                                        if (selectedCourse!.rating! % 1 != 0)
                                           const Icon(
                                             Icons.star_half,
-                                            color:
-                                                Colors.green, // نصف نجمة خضراء
+                                            color: Colors.green,
                                             size: 20,
                                           ),
+                                        // النجوم الفارغة المتبقية
                                         ...List.generate(
-                                          5 -
-                                              course.rating!
-                                                  .ceil(), // توليد النجوم البيضاء المتبقية
+                                          5 - selectedCourse!.rating!.ceil(),
                                           (index) => const Icon(
                                             Icons.star_border,
-                                            color: Colors
-                                                .green, // لون النجمة البيضاء
+                                            color: Colors.green,
                                             size: 20,
                                           ),
                                         ),
-                                        if (course.rating == null)
-                                          const Text('No Rating'),
                                       ],
                                     ),
-                                    Text(
-                                      '\$${course.price ?? 'No Price'}',
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: ColorUtility.main,
+                                ],
+                              ),
+                              Text(
+                                'Price: \$${selectedCourse?.price ?? 'No Price'}',
+                                style: TextStyle(
+                                    fontSize: 18, color: ColorUtility.main),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                selectedCourse = course; // تعيين الكورس
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: ColorUtility.grayExtraLight,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 15),
+                            ),
+                            child: const Text(
+                              'Remove',
+                              style:
+                                  TextStyle(fontSize: 22, color: Colors.black),
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (_) => PayMob()));
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: ColorUtility.deepYellow,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 15),
+                            ),
+                            child: const Text(
+                              'Checkout',
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Total',
+                            style: TextStyle(fontSize: 24),
+                          ),
+                          Text(
+                            'Price: \$${selectedCourse?.price ?? 'No Price'}',
+                            style: TextStyle(fontSize: 18, color: Colors.black),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            if (selectedCourse == null) // عرض الكورسات إذا لم يتم اختيار كورس
+              Expanded(
+                child: isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                        itemCount: filteredCourses.length,
+                        itemBuilder: (context, index) {
+                          var course = filteredCourses[index];
+                          return ExpansionTile(
+                            title: Row(
+                              children: [
+                                Hero(
+                                  tag: course.image ?? '',
+                                  child: Container(
+                                    width: 100,
+                                    height: 100,
+                                    child: Image.network(
+                                      course.image ?? '',
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        course.title ?? 'No Title',
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xff0157db),
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.person, size: 16),
+                                          const SizedBox(width: 4),
+                                          Text(course.instructor?.name ??
+                                              'No Instructor'),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          if (course.rating == null)
+                                            const Text('No Rating'),
+                                          if (course.rating != null)
+                                            Text(
+                                              course.rating!.toString(),
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: ColorUtility.gray,
+                                              ),
+                                            ),
+                                          SizedBox(
+                                            width: 3,
+                                          ),
+                                          ...List.generate(
+                                            course.rating?.floor() ?? 0,
+                                            (index) => const Icon(
+                                              Icons.star,
+                                              color: Colors.green,
+                                              size: 20,
+                                            ),
+                                          ),
+                                          if (course.rating != null &&
+                                              course.rating! % 1 != 0)
+                                            const Icon(
+                                              Icons.star_half,
+                                              color: Colors.green,
+                                              size: 20,
+                                            ),
+                                          ...List.generate(
+                                            5 - course.rating!.ceil(),
+                                            (index) => const Icon(
+                                              Icons.star_border,
+                                              color: Colors.green,
+                                              size: 20,
+                                            ),
+                                          ),
+                                          if (course.rating == null)
+                                            const Text('No Rating'),
+                                        ],
+                                      ),
+                                      Text(
+                                        '\$${course.price ?? 'No Price'}',
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: ColorUtility.main,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15.0, vertical: 10.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            ColorUtility.grayExtraLight,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16, vertical: 15),
+                                      ),
+                                      child: const Text(
+                                        'Cancel',
+                                        style: TextStyle(
+                                            fontSize: 22, color: Colors.black),
+                                      ),
+                                    ),
+                                    SizedBox(width: 5),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          buyNowAction(
+                                              course); // استدعاء نفس الدالةيين الكورس
+                                        });
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            ColorUtility.deepYellow,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 15, vertical: 15),
+                                      ),
+                                      child: const Text(
+                                        'Buy Now',
+                                        style: TextStyle(
+                                            fontSize: 20, color: Colors.white),
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
                             ],
-                          ),
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 15.0, vertical: 10.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: ColorUtility
-                                          .grayExtraLight, // لون المستطيل رمادي
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                            10), // مستطيل بدون زوايا دائرية
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 16,
-                                          vertical: 15), // حجم الخط 20
-                                    ),
-                                    child: const Text(
-                                      'Cancel',
-                                      style: TextStyle(
-                                          fontSize: 22,
-                                          color: Colors.black), // حجم الخط 20
-                                    ),
-                                  ),
-                                  SizedBox(width: 5),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) => PayMob()),
-                                      );
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: ColorUtility
-                                          .deepYellow, // لون المستطيل أصفر
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                            10), // مستطيل بدون زوايا دائرية
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 15,
-                                          vertical: 15), // حجم الخط 20
-                                    ),
-                                    child: const Text(
-                                      'Buy Now',
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.white),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-            ),
+                          );
+                        },
+                      ),
+              ),
           ],
         ),
       ),
     );
+  }
+
+  ///دالة الاستدعاء لنفس الزر
+  void buyNowAction(Course course) {
+    setState(() {
+      selectedCourse = course; // تعيين الكورس
+    });
   }
 }

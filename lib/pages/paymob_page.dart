@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/pages/cart_page.dart';
 import 'package:flutter_application_1/utils/color_utilis.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:paymob_payment/paymob_payment.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PayMob extends StatefulWidget {
   const PayMob({super.key});
@@ -16,14 +16,25 @@ class _PayMobState extends State<PayMob> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Payment Method',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
+        backgroundColor: Colors.white,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Payment Method',
+              style: const TextStyle(color: Colors.black),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CartPage()),
+                );
+              },
+              icon:
+                  const Icon(Icons.shopping_cart_outlined, color: Colors.black),
+            ),
+          ],
         ),
       ),
       body: SingleChildScrollView(
@@ -96,43 +107,67 @@ class _PayMobState extends State<PayMob> {
             SizedBox(
               height: 40,
             ),
+            // ElevatedButton(
+            //   onPressed: () async {
+            //     PaymobPayment.instance.initialize(
+            //       apiKey: dotenv.env[
+            //           'apiKey']!, // from dashboard Select Settings -> Account Info -> API Key
+            //       integrationID: int.parse(dotenv.env[
+            //           'integrationID']!), // from dashboard Select Developers -> Payment Integrations -> Online Card ID
+            //       iFrameID: int.parse(dotenv.env[
+            //           'iFrameID']!), // from paymob Select Developers -> iframes
+            //     );
+
+            //     final PaymobResponse? response =
+            //         await PaymobPayment.instance.pay(
+            //       context: context,
+            //       currency: "EGP",
+            //       amountInCents: "20000", // 200 EGP
+            //     );
+
+            //     if (response != null) {
+            //       print('Response: ${response.transactionID}');
+            //       print('Response: ${response.success}');
+            //     }
+            //   },
+            //   style: ElevatedButton.styleFrom(
+            //     backgroundColor: ColorUtility.deepYellow, // لون المستطيل أصفر
+            //     shape: RoundedRectangleBorder(
+            //       borderRadius:
+            //           BorderRadius.circular(10), // مستطيل بدون زوايا دائرية
+            //     ),
+            //     padding: const EdgeInsets.symmetric(
+            //         horizontal: 40, vertical: 20), // حجم الخط 20
+            //   ),
+            //   child: const Text(
+            //     'CONTINUE',
+            //     style: TextStyle(fontSize: 20, color: Colors.white),
+            //   ),
+            // ),
+
             ElevatedButton(
               onPressed: () async {
-                PaymobPayment.instance.initialize(
-                  apiKey: dotenv.env[
-                      'apiKey']!, // from dashboard Select Settings -> Account Info -> API Key
-                  integrationID: int.parse(dotenv.env[
-                      'integrationID']!), // from dashboard Select Developers -> Payment Integrations -> Online Card ID
-                  iFrameID: int.parse(dotenv.env[
-                      'iFrameID']!), // from paymob Select Developers -> iframes
-                );
-
-                final PaymobResponse? response =
-                    await PaymobPayment.instance.pay(
-                  context: context,
-                  currency: "EGP",
-                  amountInCents: "20000", // 200 EGP
-                );
-
-                if (response != null) {
-                  print('Response: ${response.transactionID}');
-                  print('Response: ${response.success}');
+                const url = 'https://accept.paymob.com';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  print('Could not launch $url');
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorUtility.deepYellow, // لون المستطيل أصفر
+                backgroundColor: ColorUtility.deepYellow,
                 shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(10), // مستطيل بدون زوايا دائرية
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 40, vertical: 20), // حجم الخط 20
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
               ),
               child: const Text(
-                'CONTINUE',
+                'Checkout',
                 style: TextStyle(fontSize: 20, color: Colors.white),
               ),
             ),
+
             SizedBox(height: 10), // Add space between the title and the list.
           ]),
         ),

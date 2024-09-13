@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/trending.dart';
+import 'package:flutter_application_1/pages/cart_page.dart';
 import 'package:flutter_application_1/widgets/navigator_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -22,15 +23,20 @@ class _TrendingPageState extends State<TrendingPage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Trending'),
-              ],
+            Text(
+              'Trending',
+              style: const TextStyle(color: Colors.black),
             ),
             IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.shopping_cart_outlined)),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CartPage()),
+                );
+              },
+              icon:
+                  const Icon(Icons.shopping_cart_outlined, color: Colors.black),
+            ),
           ],
         ),
       ),
@@ -76,28 +82,32 @@ class _TrendingPageState extends State<TrendingPage> {
                           []);
 
                       return ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: trendingItems.length,
-                        separatorBuilder: (context, index) => const SizedBox(
-                          width: 10,
-                        ),
-                        itemBuilder: (context, index) => InkWell(
-                          onTap: () async {
-                            // تنفيذ التنقل إلى صفحة جديدة تحتوي على التفاصيل المتعلقة بالعنصر المتداول
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: const Color(0xffE0E0E0),
-                              borderRadius: BorderRadius.circular(40),
-                            ),
-                            child: Center(
-                              child:
-                                  Text(trendingItems[index].name ?? 'No Name'),
-                            ),
-                          ),
-                        ),
-                      );
+                          scrollDirection: Axis.horizontal,
+                          itemCount: trendingItems.length,
+                          separatorBuilder: (context, index) => const SizedBox(
+                                width: 10,
+                              ),
+                          itemBuilder: (context, index) => InkWell(
+                                onTap: () async {
+                                  // تنفيذ التنقل إلى صفحة جديدة تحتوي على التفاصيل المتعلقة بالعنصر المتداول
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xffE0E0E0),
+                                    borderRadius: BorderRadius.circular(40),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                        trendingItems[index].name ?? 'No Name',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        )),
+                                  ),
+                                ),
+                              ));
                     })),
           ]),
         ),

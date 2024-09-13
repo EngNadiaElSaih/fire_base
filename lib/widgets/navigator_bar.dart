@@ -4,6 +4,7 @@ import 'package:flutter_application_1/pages/all_cources_page.dart';
 
 import 'package:flutter_application_1/pages/profile_page.dart';
 import 'package:flutter_application_1/pages/trending_page.dart';
+import 'package:flutter_application_1/posts_screens/addpost_page.dart';
 
 import 'package:flutter_application_1/posts_screens/post_list_page.dart';
 
@@ -59,11 +60,11 @@ class NavigatorBar extends StatelessWidget {
           icon: GestureDetector(
             onTap: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => PostsListPage()));
+                  context, MaterialPageRoute(builder: (_) => AddPostPage()));
             },
             child: const Icon(Icons.chat_bubble_outline),
           ),
-          label: 'Message',
+          label: 'Chats',
         ),
         BottomNavigationBarItem(
           icon: GestureDetector(

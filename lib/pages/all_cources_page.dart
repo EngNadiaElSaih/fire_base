@@ -86,6 +86,7 @@ class _AllCoursesState extends State<AllCourses> {
           ],
         ),
       ),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
