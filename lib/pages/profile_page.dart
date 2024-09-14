@@ -267,15 +267,123 @@ class _ProfilePageState extends State<ProfilePage> {
                           IconButton(
                             color: ColorUtility.deepYellow,
                             icon: const Icon(Icons.image),
-                            onPressed: _uploadImageToFirebase,
+                            onPressed:
+                                _uploadImageToFirebase, // تحديث الصورة عند الضغط
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Text("Change Your Profile Name?",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: ColorUtility.main,
+                              )),
+                          const SizedBox(width: 10),
+                          IconButton(
+                            color: ColorUtility.deepYellow,
+                            icon: const Icon(Icons.title),
+                            onPressed:
+                                _uploadImageToFirebase, // تحديث الصورة عند الضغط
                           ),
                         ],
                       ),
                     ],
                   ),
+                if (index == 1)
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Text("Change Your Profile E-mail?",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: ColorUtility.main,
+                              )),
+                          const SizedBox(width: 10),
+                          IconButton(
+                              color: ColorUtility.deepYellow,
+                              icon: const Icon(Icons.contact_mail),
+                              onPressed: () {}
+                              // تحديث الصورة عند الضغط
+                              ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Text("Change Your Profile Password?",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: ColorUtility.main,
+                              )),
+                          const SizedBox(width: 10),
+                          IconButton(
+                              color: ColorUtility.deepYellow,
+                              icon: const Icon(Icons.password),
+                              onPressed: () {}
+                              // تحديث الصورة عند الضغط
+                              ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Text("LOck your Profile?",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: ColorUtility.main,
+                              )),
+                          const SizedBox(width: 10),
+                          IconButton(
+                              color: ColorUtility.deepYellow,
+                              icon: const Icon(Icons.lock),
+                              onPressed: () {}
+                              // تحديث الصورة عند الضغط
+                              ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Text("Change Your theme Color?",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: ColorUtility.main,
+                              )),
+                          const SizedBox(width: 10),
+                          IconButton(
+                            icon: const Icon(Icons.format_color_fill),
+                            color: ColorUtility.deepYellow,
+                            onPressed: () {},
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                if (index == 2)
+                  Row(children: [
+                    const Text(
+                        "Egypt Council Is The Best Place \n Thank You For All",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: ColorUtility.main,
+                        )),
+                    const SizedBox(width: 10),
+                    IconButton(
+                      iconSize: 40,
+                      icon: const Icon(Icons.diversity_1_rounded),
+                      color: ColorUtility.deepYellow,
+                      onPressed: () {},
+                    ),
+                  ]),
               ],
             ),
-          ),
+          )
       ],
     );
   }
