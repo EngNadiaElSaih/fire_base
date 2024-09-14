@@ -30,11 +30,20 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Text('Welcome Back!',
                     style: const TextStyle(color: Colors.black)),
-                SizedBox(
-                  width: 3,
-                ),
+                IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                    )),
                 Text('${FirebaseAuth.instance.currentUser?.displayName}',
                     style: const TextStyle(color: ColorUtility.main)),
+                IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                    )),
               ],
             ),
             MouseRegion(
@@ -138,7 +147,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      bottomNavigationBar: const NavigatorBar(),
+      bottomNavigationBar: NavigatorBar(),
     );
   }
 }

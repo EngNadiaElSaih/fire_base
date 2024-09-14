@@ -579,7 +579,7 @@ class _CourseOptionsWidgetsState extends State<CourseOptionsWidgets> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: ColorUtility.deepYellow,
+                            color: Colors.black,
                           )),
                       Row(
                         children: [

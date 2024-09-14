@@ -59,12 +59,11 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  //////////////////// قائمة عناوين التصنيفات //////////////////////
-  final List<String> ProfileTitles = ['Edit', 'Setting', 'About Us'];
+  final List<String> profileTitles = ['Edit', 'Setting', 'About Us'];
 
-  // تتبع حالة الضغط على كل عنصر
   List<bool> pressedStates = [false, false, false];
   bool isHovered = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,19 +72,19 @@ class _ProfilePageState extends State<ProfilePage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               'Profile',
-              style: const TextStyle(color: Colors.black),
+              style: TextStyle(color: Colors.black),
             ),
             MouseRegion(
               onEnter: (_) {
                 setState(() {
-                  isHovered = true; // تعيين الحالة إلى true عند دخول الماوس
+                  isHovered = true;
                 });
               },
               onExit: (_) {
                 setState(() {
-                  isHovered = false; // إعادة الحالة إلى false عند خروج الماوس
+                  isHovered = false;
                 });
               },
               child: IconButton(
@@ -97,9 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 },
                 icon: Icon(
                   Icons.shopping_cart_outlined,
-                  color: isHovered
-                      ? ColorUtility.deepYellow
-                      : Colors.black, // تغيير اللون بناءً على حالة الوقوف
+                  color: isHovered ? ColorUtility.deepYellow : Colors.black,
                 ),
               ),
             ),
@@ -115,82 +112,67 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // عرض معلومات المستخدم
                 Container(
-                  alignment: Alignment.topCenter,
-                  height: 250,
-                  width: 150,
-                  child: ListView(
+                  alignment: Alignment.center,
+                  child: Column(
                     children: [
-                      UserAccountsDrawerHeader(
-                        margin: EdgeInsets.all(0),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                        ),
-                        accountName: Column(
-                          children: [
-                            SizedBox(
-                              height: 25,
+                      Stack(
+                        alignment:
+                            Alignment.center, // محاذاة العناصر في وسط الصفحة
+                        children: [
+                          CircleAvatar(
+                            radius: 80, // زيادة حجم الصورة
+                            backgroundImage: imageUrl != null
+                                ? NetworkImage(imageUrl!)
+                                : const NetworkImage(
+                                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoQgkH2cbQhMnS7wT5kwXg2St0oExJIVuIsQ&s",
+                                  ),
+                          ),
+                          Positioned(
+                            bottom: 0, // وضع الأيقونة في أسفل الصورة
+                            right: 0, // وضع الأيقونة على يمين الصورة
+                            child: IconButton(
+                              icon: const Icon(Icons.image, size: 40),
+                              color: Colors.black,
+                              // تغيير لون الأيقونة إذا رغبت
+                              onPressed: _uploadImageToFirebase,
                             ),
-                            Text(
-                              user?.displayName?.isNotEmpty == true
-                                  ? user!.displayName!
-                                  : 'No Name',
-                              style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xff1D1B20)),
-                            ),
-                          ],
-                        ),
-                        accountEmail: Text(
-                          user?.email ?? 'No Email',
-                          style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.black),
-                        ),
-                        currentAccountPicture: Stack(
-                          children: [
-                            CircleAvatar(
-                              radius: 200, // زيادة حجم الصورة
-                              backgroundImage: imageUrl != null
-                                  ? NetworkImage(
-                                      '${imageUrl}') // عرض الصورة المرفوعة
-                                  : NetworkImage(
-                                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoQgkH2cbQhMnS7wT5kwXg2St0oExJIVuIsQ&s")
-                                      as ImageProvider,
-                            ),
-                            Positioned(
-                              bottom: -10, // أقصى الأسفل
-                              left: 20, // أقصى اليمين
-                              child: IconButton(
-                                iconSize: 40, // قم بزيادة حجم الأيقونة إذا أردت
-                                color: Colors.black,
-                                icon: const Icon(Icons.image),
-                                onPressed:
-                                    _uploadImageToFirebase, // استدعاء الدالة لرفع الصورة
-                              ),
-                            ),
-                          ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        user?.displayName?.isNotEmpty == true
+                            ? user!.displayName!
+                            : 'No Name',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff1D1B20),
                         ),
                       ),
+                      Text(
+                        user?.email ?? 'No Email',
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ),
-
-                /////////////////////////استدعاء////////// قائمة التصنيفات
+                const SizedBox(height: 20),
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: ProfileTitles.length,
+                  itemCount: profileTitles.length,
                   itemBuilder: (context, index) {
                     return buildProfileItem(
-                        context, index, ProfileTitles[index]);
+                        context, index, profileTitles[index]);
                   },
                 ),
-
-                //////////////////logout/////////////////////////// زر تسجيل الخروج
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -198,9 +180,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       onPressed: () async {
                         await FirebaseAuth.instance.signOut();
                         Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginPage()));
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()),
+                        );
                       },
                       child: const Text(
                         "Logout",
@@ -284,120 +267,12 @@ class _ProfilePageState extends State<ProfilePage> {
                           IconButton(
                             color: ColorUtility.deepYellow,
                             icon: const Icon(Icons.image),
-                            onPressed:
-                                _uploadImageToFirebase, // تحديث الصورة عند الضغط
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text("Change Your Profile Name?",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: ColorUtility.main,
-                              )),
-                          const SizedBox(width: 10),
-                          IconButton(
-                            color: ColorUtility.deepYellow,
-                            icon: const Icon(Icons.title),
-                            onPressed:
-                                _uploadImageToFirebase, // تحديث الصورة عند الضغط
+                            onPressed: _uploadImageToFirebase,
                           ),
                         ],
                       ),
                     ],
                   ),
-                if (index == 1)
-                  Column(
-                    children: [
-                      Row(
-                        children: [
-                          const Text("Change Your Profile E-mail?",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: ColorUtility.main,
-                              )),
-                          const SizedBox(width: 10),
-                          IconButton(
-                              color: ColorUtility.deepYellow,
-                              icon: const Icon(Icons.contact_mail),
-                              onPressed: () {}
-                              // تحديث الصورة عند الضغط
-                              ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text("Change Your Profile Password?",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: ColorUtility.main,
-                              )),
-                          const SizedBox(width: 10),
-                          IconButton(
-                              color: ColorUtility.deepYellow,
-                              icon: const Icon(Icons.password),
-                              onPressed: () {}
-                              // تحديث الصورة عند الضغط
-                              ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text("LOck your Profile?",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: ColorUtility.main,
-                              )),
-                          const SizedBox(width: 10),
-                          IconButton(
-                              color: ColorUtility.deepYellow,
-                              icon: const Icon(Icons.lock),
-                              onPressed: () {}
-                              // تحديث الصورة عند الضغط
-                              ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text("Change Your theme Color?",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: ColorUtility.main,
-                              )),
-                          const SizedBox(width: 10),
-                          IconButton(
-                            icon: const Icon(Icons.format_color_fill),
-                            color: ColorUtility.deepYellow,
-                            onPressed: () {},
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                if (index == 2)
-                  Row(children: [
-                    const Text(
-                        "Egypt Council Is The Best Place \n Thank You For All",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: ColorUtility.main,
-                        )),
-                    const SizedBox(width: 10),
-                    IconButton(
-                      iconSize: 40,
-                      icon: const Icon(Icons.diversity_1_rounded),
-                      color: ColorUtility.deepYellow,
-                      onPressed: () {},
-                    ),
-                  ]),
               ],
             ),
           ),

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/pages/cart_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_application_1/models/course.dart';
 import 'package:flutter_application_1/utils/color_utilis.dart';
-import 'package:flutter_application_1/widgets/courses_widget.dart';
 import 'package:flutter_application_1/widgets/label_widget.dart';
+import 'package:flutter_application_1/widgets/navigator_bar.dart';
 
 class AllCategories extends StatefulWidget {
   const AllCategories({Key? key}) : super(key: key);
@@ -16,17 +17,12 @@ class _AllCategoriesState extends State<AllCategories> {
 
   // قائمة العناوين
   final List<String> categoryTitles = [
-    'Business',
+    'Bussiness',
     'UI/UX',
-    'Software Engineering'
+    'Software Engineer'
   ];
 
-  // قائمة البيانات التي سيتم عرضها لكل عنوان
-  final List<String> categoryCourses = [
-    'Business Course 1',
-    'UI/UX Course 1',
-    'Software Engineering Course 1'
-  ];
+  bool isHovered = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +33,26 @@ class _AllCategoriesState extends State<AllCategories> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text('Categories'),
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const CartPage()),
-                );
+            MouseRegion(
+              onEnter: (_) {
+                setState(() {
+                  isHovered = true;
+                });
               },
-              icon: const Icon(Icons.shopping_cart_outlined),
+              onExit: (_) {
+                setState(() {
+                  isHovered = false;
+                });
+              },
+              child: IconButton(
+                onPressed: () {
+                  // تعامل مع السلة هنا
+                },
+                icon: Icon(
+                  Icons.shopping_cart_outlined,
+                  color: isHovered ? ColorUtility.deepYellow : Colors.black,
+                ),
+              ),
             ),
           ],
         ),
@@ -59,7 +67,6 @@ class _AllCategoriesState extends State<AllCategories> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 40),
-                // بناء كل عنصر من عناصر التصنيف
                 ...categoryTitles.asMap().entries.map((entry) {
                   int index = entry.key;
                   String title = entry.value;
@@ -67,7 +74,7 @@ class _AllCategoriesState extends State<AllCategories> {
                   return Column(
                     children: [
                       buildCategoryItem(context, index, title),
-                      const SizedBox(height: 20), // المسافة الرأسية بين العناصر
+                      const SizedBox(height: 20),
                     ],
                   );
                 }),
@@ -76,45 +83,28 @@ class _AllCategoriesState extends State<AllCategories> {
           ),
         ),
       ),
+      bottomNavigationBar: NavigatorBar(),
     );
   }
 
   Widget buildCategoryItem(BuildContext context, int index, String title) {
-    bool isPressed = pressedStates[index] ?? false; // التحقق من حالة الضغط
-
-    // بناء عنوان الدورة بناءً على التصنيف
-    switch (index) {
-      case 0:
-        break;
-      case 1:
-        break;
-      case 2:
-        break;
-      default:
-    }
+    bool isPressed = pressedStates[index] ?? false;
 
     return Column(
       children: [
         InkWell(
-          onTap: () async {
+          onTap: () {
             setState(() {
-              pressedStates[index] = !isPressed; // تغيير حالة الضغط
+              pressedStates[index] = !isPressed;
             });
-            if (!isPressed) {
-              // هنا يمكنك إضافة الكود لجلب البيانات من Firestore إذا كنت بحاجة لذلك
-            }
           },
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: isPressed
-                  ? Colors.white
-                  : ColorUtility.grayExtraLight, // لون الخلفية
-              borderRadius: BorderRadius.circular(5), // زوايا دائرية
+              color: isPressed ? Colors.white : ColorUtility.grayExtraLight,
+              borderRadius: BorderRadius.circular(5),
               border: Border.all(
-                color: isPressed
-                    ? Colors.yellow
-                    : ColorUtility.grayExtraLight, // لون الإطار
+                color: isPressed ? Colors.yellow : ColorUtility.grayExtraLight,
                 width: 2,
               ),
             ),
@@ -122,23 +112,18 @@ class _AllCategoriesState extends State<AllCategories> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  title, // نص العنصر
+                  title,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: isPressed
-                        ? ColorUtility.deepYellow
-                        : Colors.black, // لون النص
+                    color: isPressed ? ColorUtility.deepYellow : Colors.black,
                   ),
                 ),
                 Icon(
                   isPressed
                       ? Icons.keyboard_double_arrow_down_sharp
-                      : Icons
-                          .keyboard_double_arrow_right_sharp, // تغيير الأيقونة حسب الضغط
-                  color: isPressed
-                      ? ColorUtility.deepYellow
-                      : Colors.black, // تغيير لون الأيقونة
+                      : Icons.keyboard_double_arrow_right_sharp,
+                  color: isPressed ? ColorUtility.deepYellow : Colors.black,
                   size: 24,
                 ),
               ],
@@ -157,22 +142,121 @@ class _AllCategoriesState extends State<AllCategories> {
                     // التعامل مع حدث "See All"
                   },
                 ),
-                const SizedBox(
-                    height: 10), // المسافة بين LabelWidget و CoursesCategory
+                const SizedBox(height: 10),
 
-                if (index == 0)
-                  const CoursesWidget(
-                    rankValue: 'top rated',
-                  ),
-                if (index == 1)
-                  const CoursesWidget(
-                    rankValue: 'search for',
-                  ),
-                if (index == 2)
-                  const CoursesWidget(
-                    rankValue: 'top seller',
-                  ),
-                const SizedBox(height: 20), // المسافة بين العناصر
+                // هنا نعرض الكورسات بناءً على التصنيف باستخدام StreamBuilder
+                StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('courses')
+                      .where('category.name', isEqualTo: title)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return const Center(child: Text('No courses found.'));
+                    }
+
+                    final courses = snapshot.data!.docs.map((doc) {
+                      return Course.fromJson(
+                          doc.data() as Map<String, dynamic>);
+                    }).toList();
+
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: courses.length,
+                      itemBuilder: (context, index) {
+                        final course = courses[index];
+                        return ListTile(
+                          leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: course.image != null
+                                ? Image.network(
+                                    course.image!,
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  )
+                                : const Icon(Icons.image, size: 80),
+                          ),
+                          title: Text(
+                            course.title ?? 'No Title',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xff0157db),
+                            ),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(Icons.person, size: 16),
+                                  const SizedBox(width: 4),
+                                  Text(course.instructor?.name ??
+                                      'No Instructor'),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    course.rating?.toString() ?? 'No Rating',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: ColorUtility.gray,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 3),
+                                  ...List.generate(
+                                    (course.rating ?? 0).floor(),
+                                    (index) => const Icon(
+                                      Icons.star,
+                                      color: Colors.green,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  if (course.rating != null &&
+                                      course.rating! % 1 != 0)
+                                    const Icon(
+                                      Icons.star_half,
+                                      color: Colors.green,
+                                      size: 20,
+                                    ),
+                                  ...List.generate(
+                                    5 - (course.rating?.ceil() ?? 0),
+                                    (index) => const Icon(
+                                      Icons.star_border,
+                                      color: Colors.green,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    '\$${course.price ?? 'No Price'}',
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: ColorUtility.main,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+                const SizedBox(height: 20),
               ],
             ),
           ),

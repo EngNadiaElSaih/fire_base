@@ -4,6 +4,7 @@ import 'package:flutter_application_1/models/category.dart';
 import 'package:flutter_application_1/pages/coursesby_category_page.dart';
 import 'package:flutter_application_1/utils/color_utilis.dart';
 
+//////from //home page///to /////CoursesByCategoryPage////
 class CategoriesWidget extends StatefulWidget {
   const CategoriesWidget({super.key, required Null Function() onSeeAllClicked});
 
