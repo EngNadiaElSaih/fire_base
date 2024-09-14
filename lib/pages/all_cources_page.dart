@@ -7,7 +7,7 @@ import 'package:flutter_application_1/utils/color_utilis.dart';
 import 'package:flutter_application_1/widgets/navigator_bar.dart';
 
 class AllCourses extends StatefulWidget {
-  const AllCourses({Key? key}) : super(key: key);
+  const AllCourses({Key? key, required String categoryValue}) : super(key: key);
 
   @override
   State<AllCourses> createState() => _AllCoursesState();
@@ -66,6 +66,7 @@ class _AllCoursesState extends State<AllCourses> {
     });
   }
 
+  bool isHovered = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,14 +76,32 @@ class _AllCoursesState extends State<AllCourses> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text('Courses'),
-            IconButton(
+            MouseRegion(
+              onEnter: (_) {
+                setState(() {
+                  isHovered = true; // تعيين الحالة إلى true عند دخول الماوس
+                });
+              },
+              onExit: (_) {
+                setState(() {
+                  isHovered = false; // إعادة الحالة إلى false عند خروج الماوس
+                });
+              },
+              child: IconButton(
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const CartPage()),
                   );
                 },
-                icon: const Icon(Icons.shopping_cart_outlined)),
+                icon: Icon(
+                  Icons.shopping_cart_outlined,
+                  color: isHovered
+                      ? ColorUtility.deepYellow
+                      : Colors.black, // تغيير اللون بناءً على حالة الوقوف
+                ),
+              ),
+            ),
           ],
         ),
       ),

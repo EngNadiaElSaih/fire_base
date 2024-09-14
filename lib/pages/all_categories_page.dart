@@ -115,7 +115,7 @@ class _AllCategoriesState extends State<AllCategories> {
                 color: isPressed
                     ? Colors.yellow
                     : ColorUtility.grayExtraLight, // لون الإطار
-                width: 1,
+                width: 2,
               ),
             ),
             child: Row(

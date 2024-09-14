@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/pages/cart_page.dart';
 import 'package:flutter_application_1/posts_screens/posts.dart';
 import 'package:flutter_application_1/posts_screens/sql_server.dart';
+import 'package:flutter_application_1/utils/color_utilis.dart';
 import 'package:flutter_application_1/widgets/navigator_bar.dart';
 
 class EditPostPage extends StatefulWidget {
@@ -38,6 +40,7 @@ class _EditPostPageState extends State<EditPostPage> {
     }
   }
 
+  bool isHovered = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,9 +50,32 @@ class _EditPostPageState extends State<EditPostPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text('Edit Posts'),
-            IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.shopping_cart_outlined)),
+            MouseRegion(
+              onEnter: (_) {
+                setState(() {
+                  isHovered = true; // تعيين الحالة إلى true عند دخول الماوس
+                });
+              },
+              onExit: (_) {
+                setState(() {
+                  isHovered = false; // إعادة الحالة إلى false عند خروج الماوس
+                });
+              },
+              child: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const CartPage()),
+                  );
+                },
+                icon: Icon(
+                  Icons.shopping_cart_outlined,
+                  color: isHovered
+                      ? ColorUtility.deepYellow
+                      : Colors.black, // تغيير اللون بناءً على حالة الوقوف
+                ),
+              ),
+            ),
           ],
         ),
       ),

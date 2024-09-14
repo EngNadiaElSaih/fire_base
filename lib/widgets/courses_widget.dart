@@ -28,6 +28,7 @@ class _CoursesWidgetState extends State<CoursesWidget> {
         .get();
   }
 
+  bool isHovered = false;
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(

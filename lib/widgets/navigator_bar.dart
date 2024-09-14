@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_application_1/pages/all_cources_page.dart';
-
 import 'package:flutter_application_1/pages/profile_page.dart';
 import 'package:flutter_application_1/pages/trending_page.dart';
 import 'package:flutter_application_1/posts_screens/addpost_page.dart';
+import 'package:flutter_application_1/utils/color_utilis.dart';
 
-import 'package:flutter_application_1/posts_screens/post_list_page.dart';
-
-class NavigatorBar extends StatelessWidget {
+class NavigatorBar extends StatefulWidget {
   const NavigatorBar({super.key});
+
+  @override
+  State<NavigatorBar> createState() => _NavigatorBarState();
+}
+
+class _NavigatorBarState extends State<NavigatorBar> {
+  // متغيرات منفصلة لحالة التحويم لكل أيقونة
+  bool isHomeHovered = false;
+  bool isCoursesHovered = false;
+  bool isSearchHovered = false;
+  bool isChatsHovered = false;
+  bool isProfileHovered = false;
 
   void _navigate(BuildContext context, String routeName) {
     Navigator.pushNamed(context, routeName);
@@ -24,7 +33,22 @@ class NavigatorBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: GestureDetector(
             onTap: () => _navigate(context, '/home'),
-            child: const Icon(Icons.home),
+            child: MouseRegion(
+              onEnter: (_) {
+                setState(() {
+                  isHomeHovered = true;
+                });
+              },
+              onExit: (_) {
+                setState(() {
+                  isHomeHovered = false;
+                });
+              },
+              child: Icon(
+                Icons.home,
+                color: isHomeHovered ? ColorUtility.deepYellow : Colors.black,
+              ),
+            ),
           ),
           label: 'Home',
         ),
@@ -34,11 +58,29 @@ class NavigatorBar extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => AllCourses(),
+                  builder: (_) => AllCourses(
+                    categoryValue: ' courseCategory',
+                  ),
                 ),
               );
             },
-            child: const Icon(Icons.menu_book),
+            child: MouseRegion(
+              onEnter: (_) {
+                setState(() {
+                  isCoursesHovered = true;
+                });
+              },
+              onExit: (_) {
+                setState(() {
+                  isCoursesHovered = false;
+                });
+              },
+              child: Icon(
+                Icons.menu_book,
+                color:
+                    isCoursesHovered ? ColorUtility.deepYellow : Colors.black,
+              ),
+            ),
           ),
           label: 'Courses',
         ),
@@ -52,7 +94,22 @@ class NavigatorBar extends StatelessWidget {
                 ),
               );
             },
-            child: const Icon(Icons.search),
+            child: MouseRegion(
+              onEnter: (_) {
+                setState(() {
+                  isSearchHovered = true;
+                });
+              },
+              onExit: (_) {
+                setState(() {
+                  isSearchHovered = false;
+                });
+              },
+              child: Icon(
+                Icons.search,
+                color: isSearchHovered ? ColorUtility.deepYellow : Colors.black,
+              ),
+            ),
           ),
           label: 'Search',
         ),
@@ -62,7 +119,22 @@ class NavigatorBar extends StatelessWidget {
               Navigator.push(
                   context, MaterialPageRoute(builder: (_) => AddPostPage()));
             },
-            child: const Icon(Icons.chat_bubble_outline),
+            child: MouseRegion(
+              onEnter: (_) {
+                setState(() {
+                  isChatsHovered = true;
+                });
+              },
+              onExit: (_) {
+                setState(() {
+                  isChatsHovered = false;
+                });
+              },
+              child: Icon(
+                Icons.chat_bubble_outline,
+                color: isChatsHovered ? ColorUtility.deepYellow : Colors.black,
+              ),
+            ),
           ),
           label: 'Chats',
         ),
@@ -79,11 +151,35 @@ class NavigatorBar extends StatelessWidget {
                 ),
               );
             },
-            child: const CircleAvatar(
-              backgroundImage:
-                  //AssetImage("assets/images/profile.jpg"),
-                  NetworkImage(
-                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoQgkH2cbQhMnS7wT5kwXg2St0oExJIVuIsQ&s'),
+            child: MouseRegion(
+              onEnter: (_) {
+                setState(() {
+                  isProfileHovered = true;
+                });
+              },
+              onExit: (_) {
+                setState(() {
+                  isProfileHovered = false;
+                });
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: isProfileHovered
+                        ? ColorUtility.deepYellow
+                        : Colors.black,
+                    width: 2.0, // سمك الحدود
+                  ),
+                ),
+                child: CircleAvatar(
+                  radius: 20, // يمكنك تعديل الحجم حسب الحاجة
+                  backgroundImage: NetworkImage(
+                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoQgkH2cbQhMnS7wT5kwXg2St0oExJIVuIsQ&s',
+                  ),
+                  backgroundColor: Colors.transparent, // اجعل الخلفية شفافة
+                ),
+              ),
             ),
           ),
           label: 'Profile',

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/all_categories_page.dart';
 import 'package:flutter_application_1/pages/cart_page.dart';
+import 'package:flutter_application_1/utils/color_utilis.dart';
 import 'package:flutter_application_1/widgets/categories_widget.dart';
 import 'package:flutter_application_1/widgets/courses_widget.dart';
 import 'package:flutter_application_1/widgets/label_widget.dart';
@@ -16,6 +17,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool isHovered = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,19 +26,42 @@ class _HomePageState extends State<HomePage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'Welcome Back! ${FirebaseAuth.instance.currentUser?.displayName}',
-              style: const TextStyle(color: Colors.black),
+            Row(
+              children: [
+                Text('Welcome Back!',
+                    style: const TextStyle(color: Colors.black)),
+                SizedBox(
+                  width: 3,
+                ),
+                Text('${FirebaseAuth.instance.currentUser?.displayName}',
+                    style: const TextStyle(color: ColorUtility.main)),
+              ],
             ),
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const CartPage()),
-                );
+            MouseRegion(
+              onEnter: (_) {
+                setState(() {
+                  isHovered = true; // تعيين الحالة إلى true عند دخول الماوس
+                });
               },
-              icon:
-                  const Icon(Icons.shopping_cart_outlined, color: Colors.black),
+              onExit: (_) {
+                setState(() {
+                  isHovered = false; // إعادة الحالة إلى false عند خروج الماوس
+                });
+              },
+              child: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const CartPage()),
+                  );
+                },
+                icon: Icon(
+                  Icons.shopping_cart_outlined,
+                  color: isHovered
+                      ? ColorUtility.deepYellow
+                      : Colors.black, // تغيير اللون بناءً على حالة الوقوف
+                ),
+              ),
             ),
           ],
         ),

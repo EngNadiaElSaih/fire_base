@@ -99,6 +99,19 @@ class _CoursesCategoryState extends State<CoursesCategory> {
                     ),
                     Row(
                       children: [
+                        if (course.rating == null) const Text('No Rating'),
+                        if (course.rating != null)
+                          Text(
+                            course.rating!.toString(),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: ColorUtility.gray,
+                            ),
+                          ),
+                        SizedBox(
+                          width: 3,
+                        ),
                         ...List.generate(
                           (course.rating ?? 0).floor(),
                           (index) => const Icon(

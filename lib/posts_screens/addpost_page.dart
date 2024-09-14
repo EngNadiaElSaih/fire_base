@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/pages/cart_page.dart';
 import 'package:flutter_application_1/posts_screens/post_list_page.dart';
 import 'package:flutter_application_1/posts_screens/sql_server.dart';
+import 'package:flutter_application_1/utils/color_utilis.dart';
 import 'package:flutter_application_1/widgets/navigator_bar.dart';
 
 class AddPostPage extends StatefulWidget {
@@ -27,6 +29,7 @@ class _AddPostPageState extends State<AddPostPage> {
     }
   }
 
+  bool isHovered = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,9 +39,32 @@ class _AddPostPageState extends State<AddPostPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text('Add PostsS'),
-            IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.shopping_cart_outlined)),
+            MouseRegion(
+              onEnter: (_) {
+                setState(() {
+                  isHovered = true; // تعيين الحالة إلى true عند دخول الماوس
+                });
+              },
+              onExit: (_) {
+                setState(() {
+                  isHovered = false; // إعادة الحالة إلى false عند خروج الماوس
+                });
+              },
+              child: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const CartPage()),
+                  );
+                },
+                icon: Icon(
+                  Icons.shopping_cart_outlined,
+                  color: isHovered
+                      ? ColorUtility.deepYellow
+                      : Colors.black, // تغيير اللون بناءً على حالة الوقوف
+                ),
+              ),
+            ),
           ],
         ),
       ),

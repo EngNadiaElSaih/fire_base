@@ -12,6 +12,7 @@ class PayMob extends StatefulWidget {
 
 class _PayMobState extends State<PayMob> {
   bool isPressed = false;
+  bool isHovered = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,19 +25,36 @@ class _PayMobState extends State<PayMob> {
               'Payment Method',
               style: const TextStyle(color: Colors.black),
             ),
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const CartPage()),
-                );
+            MouseRegion(
+              onEnter: (_) {
+                setState(() {
+                  isHovered = true; // تعيين الحالة إلى true عند دخول الماوس
+                });
               },
-              icon:
-                  const Icon(Icons.shopping_cart_outlined, color: Colors.black),
+              onExit: (_) {
+                setState(() {
+                  isHovered = false; // إعادة الحالة إلى false عند خروج الماوس
+                });
+              },
+              child: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const CartPage()),
+                  );
+                },
+                icon: Icon(
+                  Icons.shopping_cart_outlined,
+                  color: isHovered
+                      ? ColorUtility.deepYellow
+                      : Colors.black, // تغيير اللون بناءً على حالة الوقوف
+                ),
+              ),
             ),
           ],
         ),
       ),
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10.0),

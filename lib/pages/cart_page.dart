@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/course.dart';
 import 'package:flutter_application_1/pages/paymob_page.dart';
 import 'package:flutter_application_1/utils/color_utilis.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({Key? key}) : super(key: key);
@@ -62,6 +60,7 @@ class _CartPageState extends State<CartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: const Text(
           'Cart',
           textAlign: TextAlign.center,

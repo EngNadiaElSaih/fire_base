@@ -64,7 +64,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   // تتبع حالة الضغط على كل عنصر
   List<bool> pressedStates = [false, false, false];
-
+  bool isHovered = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,15 +77,31 @@ class _ProfilePageState extends State<ProfilePage> {
               'Profile',
               style: const TextStyle(color: Colors.black),
             ),
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const CartPage()),
-                );
+            MouseRegion(
+              onEnter: (_) {
+                setState(() {
+                  isHovered = true; // تعيين الحالة إلى true عند دخول الماوس
+                });
               },
-              icon:
-                  const Icon(Icons.shopping_cart_outlined, color: Colors.black),
+              onExit: (_) {
+                setState(() {
+                  isHovered = false; // إعادة الحالة إلى false عند خروج الماوس
+                });
+              },
+              child: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const CartPage()),
+                  );
+                },
+                icon: Icon(
+                  Icons.shopping_cart_outlined,
+                  color: isHovered
+                      ? ColorUtility.deepYellow
+                      : Colors.black, // تغيير اللون بناءً على حالة الوقوف
+                ),
+              ),
             ),
           ],
         ),
