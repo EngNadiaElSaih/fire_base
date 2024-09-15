@@ -233,11 +233,17 @@ class _CartPageState extends State<CartPage> {
                         children: [
                           Text(
                             'Total',
-                            style: TextStyle(fontSize: 24),
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
                           ),
                           Text(
                             'Price: \$${selectedCourse?.price ?? 'No Price'}',
-                            style: TextStyle(fontSize: 18, color: Colors.black),
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),

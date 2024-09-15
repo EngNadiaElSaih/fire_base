@@ -42,23 +42,44 @@ class _ChatPageState extends State<ChatPage> {
 
   String? imageUrl;
 
-  String? imageLink;
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Center(
-          child: CircleAvatar(
-            radius: 30,
-            backgroundImage: _userImageUrl != null
-                ? NetworkImage(_userImageUrl!)
-                : const NetworkImage(
-                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoQgkH2cbQhMnS7wT5kwXg2St0oExJIVuIsQ&s',
+        toolbarHeight: 150, // تحديد ارتفاع الـ AppBar
+        flexibleSpace: Container(
+          color: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 40,
+                ),
+                CircleAvatar(
+                  radius: 40, // زيادة حجم الصورة
+                  backgroundImage: imageUrl != null
+                      ? NetworkImage(imageUrl!)
+                      : const NetworkImage(
+                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoQgkH2cbQhMnS7wT5kwXg2St0oExJIVuIsQ&s",
+                        ),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  user?.displayName?.isNotEmpty == true
+                      ? user!.displayName!
+                      : 'No Name',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xff1D1B20),
                   ),
-            backgroundColor: Colors.transparent,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -67,22 +88,6 @@ class _ChatPageState extends State<ChatPage> {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            Container(
-              alignment: Alignment.center,
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    radius: 50, // زيادة حجم الصورة
-                    backgroundImage: imageUrl != null
-                        ? NetworkImage(imageUrl!)
-                        : const NetworkImage(
-                            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoQgkH2cbQhMnS7wT5kwXg2St0oExJIVuIsQ&s",
-                          ),
-                  ),
-                  SizedBox(height: 20),
-                ],
-              ),
-            ),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: _firestore
@@ -90,8 +95,9 @@ class _ChatPageState extends State<ChatPage> {
                     .orderBy('timestamp', descending: false)
                     .snapshots(),
                 builder: (context, snapshot) {
-                  if (!snapshot.hasData)
-                    return Center(child: CircularProgressIndicator());
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
                   List<DocumentSnapshot> docs = snapshot.data!.docs;
 
@@ -109,12 +115,23 @@ class _ChatPageState extends State<ChatPage> {
                         child: Container(
                           margin: const EdgeInsets.symmetric(
                               vertical: 5, horizontal: 10),
-                          padding: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(15),
+                          constraints: BoxConstraints(
+                              maxWidth: 250), // تحديد العرض الأقصى
                           decoration: BoxDecoration(
                             color: isCurrentUser
-                                ? ColorUtility.main
-                                : ColorUtility.deepYellow,
-                            borderRadius: BorderRadius.circular(10),
+                                ? ColorUtility.main // لون مختلف للمرسل
+                                : ColorUtility.deepYellow, // لون مختلف للمستقبل
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(15),
+                              topRight: Radius.circular(15),
+                              bottomLeft: isCurrentUser
+                                  ? Radius.circular(15)
+                                  : Radius.circular(0), // حواف دائرية حسب الجهة
+                              bottomRight: isCurrentUser
+                                  ? Radius.circular(0)
+                                  : Radius.circular(15),
+                            ),
                           ),
                           child: Column(
                             crossAxisAlignment: isCurrentUser
@@ -122,20 +139,20 @@ class _ChatPageState extends State<ChatPage> {
                                 : CrossAxisAlignment.start,
                             children: [
                               Text(
-                                isCurrentUser ? "You" : "Other User",
+                                isCurrentUser ? "Me" : "Other User",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: isCurrentUser
-                                      ? ColorUtility.main
+                                      ? Colors.white
                                       : Colors.white,
                                 ),
                               ),
-                              SizedBox(height: 5),
+                              const SizedBox(height: 5),
                               Text(
                                 messageText,
                                 style: TextStyle(
                                   color: isCurrentUser
-                                      ? ColorUtility.deepYellow
+                                      ? Colors.white
                                       : Colors.white,
                                 ),
                               ),
@@ -160,12 +177,13 @@ class _ChatPageState extends State<ChatPage> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30.0),
                         ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 20.0),
                       ),
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.send),
+                    icon: const Icon(Icons.send),
                     onPressed: () => _sendMessage('receiverId'),
                   ),
                 ],
