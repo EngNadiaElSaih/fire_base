@@ -7,6 +7,7 @@ import 'package:flutter_application_1/posts_screens/sql_server.dart';
 import 'package:flutter_application_1/utils/color_utilis.dart';
 import 'package:flutter_application_1/widgets/navigator_bar.dart';
 
+//2//page//
 class PostsListPage extends StatefulWidget {
   @override
   _PostsListPageState createState() => _PostsListPageState();

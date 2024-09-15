@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/cart_page.dart';
+import 'package:flutter_application_1/pages/edit_profile.dart';
 import 'package:flutter_application_1/pages/login_page.dart';
 import 'package:flutter_application_1/utils/color_utilis.dart';
 import 'package:flutter_application_1/widgets/navigator_bar.dart';
@@ -24,6 +25,8 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   User? user = FirebaseAuth.instance.currentUser;
   String? imageUrl;
+
+  String? imageLink;
 
   Future<void> _uploadImageToFirebase() async {
     try {
@@ -123,7 +126,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           CircleAvatar(
                             radius: 80, // زيادة حجم الصورة
                             backgroundImage: imageUrl != null
-                                ? NetworkImage(imageUrl!)
+                                ? NetworkImage(imageLink!)
                                 : const NetworkImage(
                                     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoQgkH2cbQhMnS7wT5kwXg2St0oExJIVuIsQ&s",
                                   ),
@@ -163,7 +166,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 40),
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -257,7 +260,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       Row(
                         children: [
-                          const Text("Change Your Profile Picture?",
+                          const Text("Edit Your Profile ?",
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
@@ -265,28 +268,19 @@ class _ProfilePageState extends State<ProfilePage> {
                               )),
                           const SizedBox(width: 10),
                           IconButton(
-                            color: ColorUtility.deepYellow,
-                            icon: const Icon(Icons.image),
-                            onPressed:
-                                _uploadImageToFirebase, // تحديث الصورة عند الضغط
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text("Change Your Profile Name?",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: ColorUtility.main,
-                              )),
-                          const SizedBox(width: 10),
-                          IconButton(
-                            color: ColorUtility.deepYellow,
-                            icon: const Icon(Icons.title),
-                            onPressed:
-                                _uploadImageToFirebase, // تحديث الصورة عند الضغط
-                          ),
+                              color: ColorUtility.deepYellow,
+                              icon: const Icon(Icons.edit),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => EditProfile(
+                                      selectedIndex: 0,
+                                      onClicked: (int index) {},
+                                    ),
+                                  ),
+                                );
+                              }),
                         ],
                       ),
                     ],
