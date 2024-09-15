@@ -126,7 +126,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           CircleAvatar(
                             radius: 80, // زيادة حجم الصورة
                             backgroundImage: imageUrl != null
-                                ? NetworkImage(imageLink!)
+                                ? NetworkImage(imageUrl!)
                                 : const NetworkImage(
                                     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoQgkH2cbQhMnS7wT5kwXg2St0oExJIVuIsQ&s",
                                   ),
