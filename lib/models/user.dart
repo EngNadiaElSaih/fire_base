@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class User {
   String? id;
   String? displayName;
@@ -5,6 +7,15 @@ class User {
   String? email;
   String? photoURL;
   String? imageLink;
+
+  User({
+    this.id,
+    this.displayName,
+    this.imageUrl,
+    this.email,
+    this.photoURL,
+    this.imageLink,
+  });
 
   User.fromJson(Map<String, dynamic> data) {
     id = data['id'];
@@ -21,8 +32,18 @@ class User {
     data['displayName'] = displayName;
     data['imageUrl'] = imageUrl;
     data['email'] = email;
-    photoURL = data['photoURL'];
-    imageLink = data['imageLink'];
+    data['photoURL'] = photoURL;
+    data['imageLink'] = imageLink;
     return data;
+  }
+
+  Future<void> addToFirestore() async {
+    final firestore = FirebaseFirestore.instance;
+
+    if (id != null) {
+      await firestore.collection('users').doc(id).set(toJson());
+    } else {
+      throw Exception('User ID is required to add data to Firestore');
+    }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // إضافة هذه السطر لاستيراد Firestore
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/cart_page.dart';
 import 'package:flutter_application_1/pages/edit_profile.dart';
@@ -26,7 +27,30 @@ class _ProfilePageState extends State<ProfilePage> {
   User? user = FirebaseAuth.instance.currentUser;
   String? imageUrl;
 
-  String? imageLink;
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileImage();
+  }
+
+  Future<void> _loadProfileImage() async {
+    try {
+      if (user != null) {
+        var userDoc = await FirebaseFirestore.instance
+            .collection('userProfile')
+            .doc(user!.uid)
+            .get();
+
+        if (userDoc.exists && userDoc.data()!.containsKey('imageUrl')) {
+          setState(() {
+            imageUrl = userDoc.data()!['imageUrl'];
+          });
+        }
+      }
+    } catch (e) {
+      print('Error loading profile image: $e');
+    }
+  }
 
   Future<void> _uploadImageToFirebase() async {
     try {
@@ -47,11 +71,18 @@ class _ProfilePageState extends State<ProfilePage> {
           String downloadUrl = await storageRef.getDownloadURL();
 
           setState(() {
-            imageUrl = downloadUrl; // تحديث رابط الصورة في الحالة
+            imageUrl = downloadUrl;
           });
 
-          await user?.updatePhotoURL(
-              downloadUrl); // تحديث رابط الصورة في حساب المستخدم
+          // تحديث رابط الصورة في Firebase Authentication و Firestore
+          if (user != null) {
+            await user!.updatePhotoURL(downloadUrl);
+            await FirebaseFirestore.instance
+                .collection('userProfile')
+                .doc(user!.uid)
+                .update({'imageUrl': downloadUrl});
+          }
+
           print('Image uploaded successfully: $downloadUrl');
         }
       } else {
@@ -120,11 +151,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Column(
                     children: [
                       Stack(
-                        alignment:
-                            Alignment.center, // محاذاة العناصر في وسط الصفحة
+                        alignment: Alignment.center,
                         children: [
                           CircleAvatar(
-                            radius: 80, // زيادة حجم الصورة
+                            radius: 80,
                             backgroundImage: imageUrl != null
                                 ? NetworkImage(imageUrl!)
                                 : const NetworkImage(
@@ -132,12 +162,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                           ),
                           Positioned(
-                            bottom: 0, // وضع الأيقونة في أسفل الصورة
-                            right: 0, // وضع الأيقونة على يمين الصورة
+                            bottom: 0,
+                            right: 0,
                             child: IconButton(
                               icon: const Icon(Icons.image, size: 40),
                               color: Colors.black,
-                              // تغيير لون الأيقونة إذا رغبت
                               onPressed: _uploadImageToFirebase,
                             ),
                           ),
@@ -296,291 +325,29 @@ class _ProfilePageState extends State<ProfilePage> {
                                 fontWeight: FontWeight.bold,
                                 color: ColorUtility.main,
                               )),
-                          const SizedBox(width: 10),
-                          IconButton(
-                              color: ColorUtility.deepYellow,
-                              icon: const Icon(Icons.contact_mail),
-                              onPressed: () {}
-                              // تحديث الصورة عند الضغط
-                              ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text("Change Your Profile Password?",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: ColorUtility.main,
-                              )),
-                          const SizedBox(width: 10),
-                          IconButton(
-                              color: ColorUtility.deepYellow,
-                              icon: const Icon(Icons.password),
-                              onPressed: () {}
-                              // تحديث الصورة عند الضغط
-                              ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text("LOck your Profile?",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: ColorUtility.main,
-                              )),
-                          const SizedBox(width: 10),
-                          IconButton(
-                              color: ColorUtility.deepYellow,
-                              icon: const Icon(Icons.lock),
-                              onPressed: () {}
-                              // تحديث الصورة عند الضغط
-                              ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text("Change Your theme Color?",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: ColorUtility.main,
-                              )),
-                          const SizedBox(width: 10),
-                          IconButton(
-                            icon: const Icon(Icons.format_color_fill),
-                            color: ColorUtility.deepYellow,
-                            onPressed: () {},
-                          ),
                         ],
                       ),
                     ],
                   ),
                 if (index == 2)
-                  Row(children: [
-                    const Text(
-                        "Egypt Council Is The Best Place \n Thank You For All",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: ColorUtility.main,
-                        )),
-                    const SizedBox(width: 10),
-                    IconButton(
-                      iconSize: 40,
-                      icon: const Icon(Icons.diversity_1_rounded),
-                      color: ColorUtility.deepYellow,
-                      onPressed: () {},
-                    ),
-                  ]),
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Text("Change Your Password?",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: ColorUtility.main,
+                              )),
+                        ],
+                      ),
+                    ],
+                  ),
               ],
             ),
-          )
+          ),
       ],
     );
   }
 }
-
-
-//طريقة اخرى لتحديث صورة البروفايل////
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:file_picker/file_picker.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_storage/firebase_storage.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_application_1/pages/cart_page.dart';
-// import 'package:flutter_application_1/utils/color_utilis.dart';
-// import 'package:flutter_application_1/widgets/navigator_bar.dart';
-
-// class ProfilePage extends StatefulWidget {
-//   final int selectedIndex;
-//   final Function(int index) onClicked;
-
-//   const ProfilePage({
-//     super.key,
-//     required this.selectedIndex,
-//     required this.onClicked,
-//   });
-
-//   @override
-//   State<ProfilePage> createState() => _ProfilePageState();
-// }
-
-// class _ProfilePageState extends State<ProfilePage> {
-//   User? user = FirebaseAuth.instance.currentUser;
-//   String? imageUrl;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _loadProfileImage();
-//   }
-
-//   Future<void> _loadProfileImage() async {
-//     try {
-//       var userDoc = await FirebaseFirestore.instance
-//           .collection('userProfile')
-//           .doc(user!.uid)
-//           .get();
-
-//       if (userDoc.exists && userDoc.data()!.containsKey('imageUrl')) {
-//         setState(() {
-//           imageUrl = userDoc.data()!['imageUrl'];
-//         });
-//       }
-//     } catch (e) {
-//       print('Error loading profile image: $e');
-//     }
-//   }
-
-//   Future<void> _uploadImageToFirebase() async {
-//     try {
-//       var imageResult = await FilePicker.platform
-//           .pickFiles(type: FileType.image, withData: true);
-
-//       if (imageResult != null) {
-//         var storageRef = FirebaseStorage.instance
-//             .ref('profile_images/${imageResult.files.first.name}');
-
-//         var uploadResult = await storageRef.putData(
-//           imageResult.files.first.bytes!,
-//           SettableMetadata(
-//               contentType: 'image/${imageResult.files.first.extension}'),
-//         );
-
-//         if (uploadResult.state == TaskState.success) {
-//           String downloadUrl = await storageRef.getDownloadURL();
-
-//           setState(() {
-//             imageUrl = downloadUrl;
-//           });
-
-//           // تحديث رابط الصورة في Firebase Authentication و Firestore
-//           await user?.updatePhotoURL(downloadUrl);
-//           await FirebaseFirestore.instance
-//               .collection('userProfile')
-//               .doc(user!.uid)
-//               .update({'imageUrl': downloadUrl});
-
-//           print('Image uploaded successfully: $downloadUrl');
-//         }
-//       } else {
-//         print('No file selected');
-//       }
-//     } catch (e) {
-//       print('Error uploading image: $e');
-//     }
-//   }
-
-//   bool isHovered = false;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         backgroundColor: Colors.white,
-//         title: Row(
-//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//           children: [
-//             const Text(
-//               'Profile',
-//               style: TextStyle(color: Colors.black),
-//             ),
-//             MouseRegion(
-//               onEnter: (_) {
-//                 setState(() {
-//                   isHovered = true;
-//                 });
-//               },
-//               onExit: (_) {
-//                 setState(() {
-//                   isHovered = false;
-//                 });
-//               },
-//               child: IconButton(
-//                 onPressed: () {
-//                   Navigator.push(
-//                     context,
-//                     MaterialPageRoute(builder: (_) => const CartPage()),
-//                   );
-//                 },
-//                 icon: Icon(
-//                   Icons.shopping_cart_outlined,
-//                   color: isHovered ? ColorUtility.deepYellow : Colors.black,
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//       backgroundColor: Colors.white,
-//       body: SingleChildScrollView(
-//         child: Center(
-//           child: Padding(
-//             padding: const EdgeInsets.symmetric(horizontal: 20),
-//             child: Column(
-//               mainAxisAlignment: MainAxisAlignment.start,
-//               crossAxisAlignment: CrossAxisAlignment.center,
-//               children: [
-//                 Container(
-//                   alignment: Alignment.center,
-//                   child: Column(
-//                     children: [
-//                       Stack(
-//                         alignment: Alignment.center,
-//                         children: [
-//                           CircleAvatar(
-//                             radius: 80,
-//                             backgroundImage: imageUrl != null
-//                                 ? NetworkImage(imageUrl!)
-//                                 : const NetworkImage(
-//                                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoQgkH2cbQhMnS7wT5kwXg2St0oExJIVuIsQ&s",
-//                                   ),
-//                           ),
-//                           Positioned(
-//                             bottom: 0,
-//                             right: 0,
-//                             child: IconButton(
-//                               icon: const Icon(Icons.image, size: 40),
-//                               color: Colors.black,
-//                               onPressed: _uploadImageToFirebase,
-//                             ),
-//                           ),
-//                         ],
-//                       ),
-//                       const SizedBox(height: 20),
-//                       Text(
-//                         user?.displayName?.isNotEmpty == true
-//                             ? user!.displayName!
-//                             : 'No Name',
-//                         style: const TextStyle(
-//                           fontSize: 18,
-//                           fontWeight: FontWeight.bold,
-//                           color: Color(0xff1D1B20),
-//                         ),
-//                       ),
-//                       Text(
-//                         user?.email ?? 'No Email',
-//                         style: const TextStyle(
-//                           fontSize: 15,
-//                           fontWeight: FontWeight.w900,
-//                           color: Colors.black,
-//                         ),
-//                       ),
-//                       const SizedBox(height: 20),
-//                     ],
-//                   ),
-//                 ),
-//                 const SizedBox(height: 40),
-//                 // باقي الكود الخاص بصفحة البروفايل
-//               ],
-//             ),
-//           ),
-//         ),
-//       ),
-//       bottomNavigationBar: const NavigatorBar(),
-//     );
-//   }
-// }

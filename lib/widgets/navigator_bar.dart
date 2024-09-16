@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/chats/blank_chat.dart';
 import 'package:flutter_application_1/chats/chat_detail_page.dart';
-import 'package:flutter_application_1/chats/chat_list_page.dart';
+
 import 'package:flutter_application_1/chats/chat_page.dart';
-import 'package:flutter_application_1/chats/login_chat.dart';
+
 import 'package:flutter_application_1/pages/all_cources_page.dart';
 import 'package:flutter_application_1/pages/profile_page.dart';
 import 'package:flutter_application_1/pages/trending_page.dart';
@@ -120,18 +121,8 @@ class _NavigatorBarState extends State<NavigatorBar> {
         BottomNavigationBarItem(
           icon: GestureDetector(
             onTap: () {
-              // Navigator.push(
-              //     context, MaterialPageRoute(builder: (_) => AddPostPage()));
               Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => ChatPage()));
-              // Navigator.push(
-              //     context, MaterialPageRoute(builder: (_) => ChatListPage()));
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (_) => ChatDetailPage(
-              //               chatId: '0',
-              //             )));
+                  context, MaterialPageRoute(builder: (_) => BlankPage()));
             },
             child: MouseRegion(
               onEnter: (_) {
