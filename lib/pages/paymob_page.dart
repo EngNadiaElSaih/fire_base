@@ -181,7 +181,7 @@ class _PayMobState extends State<PayMob> {
                     const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
               ),
               child: const Text(
-                'Checkout',
+                'Continue',
                 style: TextStyle(fontSize: 20, color: Colors.white),
               ),
             ),
